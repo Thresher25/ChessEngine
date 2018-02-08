@@ -1,13 +1,22 @@
 package Pieces;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class King extends ChessPiece {
 
-    public King(Point pos){
-        super(pos);
+    public King(Point pos, boolean isWhite){
+        super(pos, isWhite);
         name = "King";
         baseValue = 65536;//high number so the king doesn't ever get traded away
+        try {
+            imageW = ImageIO.read(new File("res/KingW.png"));
+            imageB = ImageIO.read(new File("res/KingB.png"));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

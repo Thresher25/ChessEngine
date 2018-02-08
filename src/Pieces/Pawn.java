@@ -1,13 +1,22 @@
 package Pieces;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Pawn extends ChessPiece {
 
-    public Pawn(Point pos){
-        super(pos);
+    public Pawn(Point pos, boolean isWhite){
+        super(pos, isWhite);
         name = "Pawn";
         baseValue = 100;
+        try {
+            imageW = ImageIO.read(new File("res/PawnW.png"));
+            imageB = ImageIO.read(new File("res/PawnB.png"));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
