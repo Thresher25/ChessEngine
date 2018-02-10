@@ -21,10 +21,18 @@ public class Pawn extends ChessPiece {
 
     @Override
     public Point[] genPossibleMoves() {
-        if(pos.y==1){
-            return new Point[]{new Point(pos.x,2),new Point(pos.x,3)};
+        if (isWhite){
+            if (pos.y == 1) {
+                return new Point[]{new Point(pos.x, 2), new Point(pos.x, 3)};
+            } else {
+                return new Point[]{new Point(pos.x, pos.y + 1)};
+            }
         }else{
-            return new Point[]{new Point(pos.x,pos.y+1)};
+            if (pos.y == 6) {
+                return new Point[]{new Point(pos.x, 5), new Point(pos.x, 4)};
+            } else {
+                return new Point[]{new Point(pos.x, pos.y - 1)};
+            }
         }
     }
 }

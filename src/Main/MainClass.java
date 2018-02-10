@@ -1,6 +1,7 @@
 package Main;
 
 import Pieces.Board;
+import Pieces.ChessPiece;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,9 @@ public class MainClass extends JPanel implements MouseListener{
 
     public JFrame frame;
     public Board gameBoard;
-    public boolean isWhiteTurn = true;
+    public ChessPiece grabbedPiece;
+    public boolean movingPiece = false;
+    public static boolean isWhiteTurn = true;
 
     public static void main(String...args){
 
@@ -58,7 +61,11 @@ public class MainClass extends JPanel implements MouseListener{
         float x = e.getX()-230;
         float y = e.getY()-50;
         if(x/106<8 && x/106>=0 && y/105<8 && y/105>=0){
-
+            if(gameBoard.isPieceAt((int)x/106,(int)y/105)){
+                movingPiece = true;
+                grabbedPiece = gameBoard.getPiece((int)x/106,(int)y/105);
+                System.out.println("X: "+(int)x/106+"   y: "+(int)y/105);
+            }
         }else{
 
         }
@@ -66,13 +73,19 @@ public class MainClass extends JPanel implements MouseListener{
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        float x = e.getX()-230;
-        float y = e.getY()-50;
-        if(x/106<8 && x/106>=0 && y/105<8 && y/105>=0){
+        if(grabbedPiece != null) {
+            float x = e.getX() - 230;
+            float y = e.getY() - 50;
+            if (x / 106 < 8 && x / 106 >= 0 && y / 105 < 8 && y / 105 >= 0) {
+                movingPiece = false;
+                gameBoard.playMove(grabbedPiece.getPos().x, grabbedPiece.getPos().y, (int) x / 106, (int) y / 105);
+                System.out.println("X: " + (int) x / 106 + "   y: " + (int) y / 105);
 
-        }else{
+            } else {
 
+            }
         }
+        grabbedPiece = null;
     }
 
     @Override

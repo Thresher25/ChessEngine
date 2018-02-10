@@ -11,9 +11,9 @@ public abstract class ChessPiece {
     public boolean isWhite;
     protected Point pos;
 
-    public ChessPiece(Point pos, boolean isWhite){
-        this.pos = pos;
-        this.isWhite = isWhite;
+    public ChessPiece(Point pPos, boolean pIsWhite){
+        pos = pPos;
+        isWhite = pIsWhite;
     }
 
     public void moveTo(Point desiredLoc){

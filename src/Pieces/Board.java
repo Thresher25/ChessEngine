@@ -1,5 +1,8 @@
 package Pieces;
 
+import Main.MainClass;
+import com.sun.tools.javac.Main;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -58,6 +61,59 @@ public class Board {
             e.printStackTrace();
         }
 
+    }
+
+    public boolean isPieceAt(int x, int y){
+        boolean pieceAt = false;
+        for(int i=0;i<gameBoard.length;i++){
+            for(int j=0;j<gameBoard[0].length;j++) {
+                if (gameBoard[i][j] != null){
+                    if (gameBoard[i][j].getPos().equals(new Point(x, y))) {
+                        pieceAt = true;
+                    }
+                }
+            }
+        }
+        return pieceAt;
+    }
+
+    public ChessPiece getPiece(int x, int y){
+        return gameBoard[x][y];
+    }
+
+    public boolean isLegalMove(ChessPiece ch, int x, int y){
+        boolean legal = false;
+        Point[] possibleMoves = ch.genPossibleMoves();
+        for(int i=0;i<possibleMoves.length;i++){
+            if(possibleMoves[i].equals(new Point(x,y)) && ch.isWhite()==MainClass.isWhiteTurn){
+                legal = true;
+                if(MainClass.isWhiteTurn){
+                    MainClass.isWhiteTurn = false;
+                }else{
+                    MainClass.isWhiteTurn = true;
+                }
+            }
+        }
+
+        return legal;
+    }
+
+    public void playMove(int ix, int iy, int dx, int dy) {
+        if (gameBoard[ix][iy] != null){
+            if (isLegalMove(gameBoard[ix][iy], dx, dy)) {
+                if (gameBoard[dx][dy]==null) {
+                    gameBoard[ix][iy].moveTo(new Point(dx, dy));
+                    gameBoard[dx][dy] = gameBoard[ix][iy];
+                    gameBoard[ix][iy] = null;
+                } else {
+                    gameBoard[ix][iy].moveTo(new Point(dx, dy));
+                    captured.add(gameBoard[dx][dy]);
+                    inPlay.remove(gameBoard[dx][dy]);
+                    gameBoard[dx][dy] = gameBoard[ix][iy];
+                    gameBoard[ix][iy] = null;
+                }
+            }
+         }
     }
 
     public void draw(Graphics g){
