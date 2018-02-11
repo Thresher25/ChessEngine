@@ -1,5 +1,7 @@
 package Main;
 
+import com.sun.tools.javac.Main;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MainClass extends JPanel implements MouseListener{
 
@@ -22,13 +25,13 @@ public class MainClass extends JPanel implements MouseListener{
                               00,00,00,00,00,00,00,00,};*/
 
         public short[] board = {23,25,24,21,22,24,25,23,
-                            26,26,26,26,26,26,26,26,
-                            00,00,00,00,00,00,00,00,
-                            00,00,00,00,00,00,00,00,
-                            00,00,00,00,00,00,00,00,
-                            00,00,00,00,00,00,00,00,
-                            16,16,16,16,16,16,16,16,
-                            13,15,14,11,12,14,15,13};
+                                26,26,26,26,26,26,26,26,
+                                00,00,00,00,00,00,00,00,
+                                00,00,00,00,00,00,00,00,
+                                00,00,00,00,00,00,00,00,
+                                00,00,00,00,00,00,00,00,
+                                16,16,16,16,16,16,16,16,
+                                13,15,14,11,12,14,15,13};
 
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -39,11 +42,12 @@ public class MainClass extends JPanel implements MouseListener{
     public BufferedImage boardImage, KingWImage, QueenWImage, RookWImage, BishopWImage, KnightWImage, PawnWImage, KingBImage, QueenBImage, RookBImage, BishopBImage, KnightBImage, PawnBImage;
     public String moves = "000000";//a move is a 6 char long string in the format of x1,y1,x2,y2,b or w or e + first letter of piece. example (111306) - piece at b1 moves to b3 captures piece type 06 (White pawn)
 
-    public static void main(String...args){
+    public static void main(String...args)throws Exception{
 
         MainClass mc = new MainClass();
 
         while(true){
+            Thread.sleep(20);
             mc.frame.repaint();
         }
 
@@ -52,20 +56,21 @@ public class MainClass extends JPanel implements MouseListener{
     public MainClass(){
 
         try{
-            boardImage   = ImageIO.read(new File("res/ChessBoard.png"));
-            KingWImage   = ImageIO.read(new File("res/KingW.png"));
-            QueenWImage  = ImageIO.read(new File("res/QueenW.png"));
-            BishopWImage = ImageIO.read(new File("res/BishopW.png"));
-            RookWImage   = ImageIO.read(new File("res/RookW.png"));
-            KnightWImage = ImageIO.read(new File("res/KnightW.png"));
-            PawnWImage   = ImageIO.read(new File("res/PawnW.png"));
-            KingBImage   = ImageIO.read(new File("res/KingB.png"));
-            QueenBImage  = ImageIO.read(new File("res/QueenB.png"));
-            RookBImage   = ImageIO.read(new File("res/RookB.png"));
-            BishopBImage = ImageIO.read(new File("res/BishopB.png"));
-            KnightBImage = ImageIO.read(new File("res/KnightB.png"));
-            PawnBImage   = ImageIO.read(new File("res/PawnB.png"));
-        }catch(IOException e){
+            ClassLoader loader = MainClass.class.getClassLoader();
+            boardImage   = ImageIO.read(loader.getResource("ChessBoard.png"));
+            KingWImage   = ImageIO.read(loader.getResource("KingW.png"));
+            QueenWImage  = ImageIO.read(loader.getResource("QueenW.png"));
+            BishopWImage = ImageIO.read(loader.getResource("BishopW.png"));
+            RookWImage   = ImageIO.read(loader.getResource("RookW.png"));
+            KnightWImage = ImageIO.read(loader.getResource("KnightW.png"));
+            PawnWImage   = ImageIO.read(loader.getResource("PawnW.png"));
+            KingBImage   = ImageIO.read(loader.getResource("KingB.png"));
+            QueenBImage  = ImageIO.read(loader.getResource("QueenB.png"));
+            RookBImage   = ImageIO.read(loader.getResource("RookB.png"));
+            BishopBImage = ImageIO.read(loader.getResource("BishopB.png"));
+            KnightBImage = ImageIO.read(loader.getResource("KnightB.png"));
+            PawnBImage   = ImageIO.read(loader.getResource("PawnB.png"));
+        }catch(Exception e){
             e.printStackTrace();
         }
         this.setSize(800, 800);
