@@ -24,14 +24,14 @@ public class MainClass extends JPanel implements MouseListener{
                               00,00,00,00,00,00,00,00,
                               00,00,00,00,00,00,00,00,};*/
 
-        public short[] board = {23,25,24,21,22,24,25,23,
+        public short[] board = {23,25,24,22,21,24,25,23,
                                 26,26,26,26,26,26,26,26,
                                 00,00,00,00,00,00,00,00,
                                 00,00,00,00,00,00,00,00,
                                 00,00,00,00,00,00,00,00,
                                 00,00,00,00,00,00,00,00,
                                 16,16,16,16,16,16,16,16,
-                                13,15,14,11,12,14,15,13};
+                                13,15,14,12,11,14,15,13};
 
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -109,6 +109,11 @@ public class MainClass extends JPanel implements MouseListener{
                                     //do nothing
                                 }
                             }
+                        }
+                        if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0){
+                            possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
+                        }else if(!KingWMoved && !RookW70Moved && board[5]==0 && board[6]==0){
+                            possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
                         }
                         break;
                     case QueenW:
@@ -271,6 +276,11 @@ public class MainClass extends JPanel implements MouseListener{
                                     //do nothing
                                 }
                             }
+                        }
+                        if(!KingBMoved && !RookB07Moved && board[(7)*8+1]==0 && board[(7)*8+2]==0 && board[(7)*8+3]==0){
+                            possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
+                        }else if(!KingBMoved && !RookB77Moved && board[(7)*8+5]==0 && board[(7)*8+6]==0){
+                            possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
                         }
                         break;
                     case QueenB:
@@ -496,7 +506,50 @@ public class MainClass extends JPanel implements MouseListener{
     public void playMove(short[] pBoard, short ix, short iy, short dx, short dy, short capPiece){
         if( (pBoard[iy*8+ix]==PawnW || pBoard[iy*8+ix]==PawnB) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]==0) ){//check for en passant
                 pBoard[iy*8+dx] = 0;
+        }else if(pBoard[iy*8+ix]==KingW){
+            if(pBoard==board){
+                KingWMoved = true;
+            }
+            if(dx-ix==-2 && !RookW00Moved){
+                pBoard[(dy)*8+dx+1] = pBoard[(0)*8+0];
+                pBoard[(0)*8+0] = 0;
+                if(pBoard==board){
+                    RookW00Moved = true;
+                }
+            }else if(dx-ix==2 && !RookW70Moved){
+                pBoard[(dy)*8+dx-1] = pBoard[(0)*8+7];
+                pBoard[(0)*8+7] = 0;
+                if(pBoard==board){
+                    RookW70Moved = true;
+                }
+            }
+        }else if(pBoard[iy*8+ix]==KingB){
+            if(pBoard==board){
+                KingBMoved = true;
+            }
+            if(dx-ix==-2 && !RookB07Moved){
+                pBoard[(dy)*8+dx+1] = pBoard[(7)*8+0];
+                pBoard[(7)*8+0] = 0;
+                if(pBoard==board){
+                    RookB07Moved = true;
+                }
+            }else if(dx-ix==2 && !RookB77Moved){
+                pBoard[(dy)*8+dx-1] = pBoard[(7)*8+7];
+                pBoard[(7)*8+7] = 0;
+                if(pBoard==board){
+                    RookB77Moved = true;
+                }
+            }
+        }else if(iy==0 && ix==0 && pBoard[iy*8+ix]==RookW && pBoard==board){
+            RookW00Moved = true;
+        }else if(iy==7 && ix==0 && pBoard[iy*8+ix]==RookB && pBoard==board){
+            RookB07Moved = true;
+        }else if(iy==0 && ix==7 && pBoard[iy*8+ix]==RookW && pBoard==board){
+            RookW70Moved = true;
+        }else if(iy==7 && ix==7 && pBoard[iy*8+ix]==RookB && pBoard==board){
+            RookB77Moved = true;
         }
+
         pBoard[dy*8+dx] = pBoard[iy*8+ix];
         pBoard[iy*8+ix] = 0;
     }
@@ -509,6 +562,40 @@ public class MainClass extends JPanel implements MouseListener{
         short capPiece = Short.parseShort(playMove.substring(4,6));
         if( (pBoard[iy*8+ix]==PawnW || pBoard[iy*8+ix]==PawnB) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]==0) ){//check for en passant
             pBoard[iy*8+dx] = 0;
+        }else if(pBoard[iy*8+ix]==KingW){
+            if(pBoard==board){
+                KingWMoved = true;
+            }
+            if(dx-ix==-2 && !RookW00Moved){
+                pBoard[(dy)*8+dx+1] = pBoard[(0)*8+0];
+                pBoard[(0)*8+0] = 0;
+                if(pBoard==board){
+                    RookW00Moved = true;
+                }
+            }else if(dx-ix==2 && !RookW70Moved){
+                pBoard[(dy)*8+dx-1] = pBoard[(0)*8+7];
+                pBoard[(0)*8+7] = 0;
+                if(pBoard==board){
+                    RookW70Moved = true;
+                }
+            }
+        }else if(pBoard[iy*8+ix]==KingB){
+            if(pBoard==board){
+                KingBMoved = true;
+            }
+            if(dx-ix==-2 && !RookB07Moved){
+                pBoard[(dy)*8+dx+1] = pBoard[(7)*8+0];
+                pBoard[(7)*8+0] = 0;
+                if(pBoard==board){
+                    RookB07Moved = true;
+                }
+            }else if(dx-ix==2 && !RookB77Moved){
+                pBoard[(dy)*8+dx-1] = pBoard[(7)*8+7];
+                pBoard[(7)*8+7] = 0;
+                if(pBoard==board){
+                    RookB77Moved = true;
+                }
+            }
         }
         pBoard[dy*8+dx] = pBoard[iy*8+ix];
         pBoard[iy*8+ix] = 0;
@@ -525,40 +612,40 @@ public class MainClass extends JPanel implements MouseListener{
         for(int i=0;i<board.length;i++){
             switch (board[i]){
                 case KingW:
-                    g.drawImage(KingWImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(KingWImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case QueenW:
-                    g.drawImage(QueenWImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(QueenWImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case BishopW :
-                    g.drawImage(BishopWImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(BishopWImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case RookW:
-                    g.drawImage(RookWImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(RookWImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case KnightW:
-                    g.drawImage(KnightWImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(KnightWImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case PawnW:
-                    g.drawImage(PawnWImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(PawnWImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case KingB:
-                    g.drawImage(KingBImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(KingBImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case QueenB:
-                    g.drawImage(QueenBImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(QueenBImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case RookB:
-                    g.drawImage(RookBImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(RookBImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case BishopB:
-                    g.drawImage(BishopBImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(BishopBImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case KnightB:
-                    g.drawImage(KnightBImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(KnightBImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 case PawnB:
-                    g.drawImage(PawnBImage,(i%8)*100,i/8*100,null);
+                    g.drawImage(PawnBImage,(i%8)*100,(7-(i/8))*100,null);
                     break;
                 default:
                     break;
@@ -582,7 +669,7 @@ public class MainClass extends JPanel implements MouseListener{
     public void mouseReleased(MouseEvent e) {
         if(!movingPiece){
             x1 = (short)(e.getX()/100);
-            y1 = (short)(e.getY()/100);
+            y1 = (short)(7-(e.getY()/100));
             if(board[y1*8+x1]!=0){
                 if(isWhiteTurn){
                     if(board[y1*8+x1]/10==2){
@@ -598,7 +685,7 @@ public class MainClass extends JPanel implements MouseListener{
             }
         }else{
             short x2 = (short)(e.getX()/100);
-            short y2 = (short)(e.getY()/100);
+            short y2 = (short)(7-(e.getY()/100));
             //check if legal
             String attemptMove = "";
             if(board[y2*8+x2]==0){
