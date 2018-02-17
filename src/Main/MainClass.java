@@ -5,6 +5,8 @@ import com.sun.tools.javac.Main;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -12,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MainClass extends JPanel implements MouseListener{
+public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
     /*public short[] board = {00,00,00,00,00,00,00,00,
@@ -37,6 +39,7 @@ public class MainClass extends JPanel implements MouseListener{
     public short grabbedPiece;
     public boolean movingPiece = false;
     public static boolean isWhiteTurn = true;
+    public JButton queenButton, rookButton, bishopButton, knightButton;
     boolean KingWMoved = false, KingBMoved = false, RookW00Moved = false, RookW70Moved = false, RookB07Moved = false, RookB77Moved = false;
     public short x1 = 0, y1 = 0;
     public BufferedImage boardImage, KingWImage, QueenWImage, RookWImage, BishopWImage, KnightWImage, PawnWImage, KingBImage, QueenBImage, RookBImage, BishopBImage, KnightBImage, PawnBImage;
@@ -73,10 +76,36 @@ public class MainClass extends JPanel implements MouseListener{
         }catch(Exception e){
             e.printStackTrace();
         }
+        this.setLayout(null);
+        queenButton = new JButton("Promote to Queen");
+        queenButton.setBounds(0,0,150,150);
+        queenButton.setActionCommand("prQueen");
+        queenButton.addActionListener(this);
+        rookButton = new JButton("Promote to Rook");
+        rookButton.setBounds(150,0,150,150);
+        rookButton.setActionCommand("prRook");
+        rookButton.addActionListener(this);
+        bishopButton = new JButton("Promote to Bishop");
+        bishopButton.setBounds(300,0,150,150);
+        bishopButton.setActionCommand("prBishop");
+        bishopButton.addActionListener(this);
+        knightButton = new JButton("Promote to Knight");
+        knightButton.setBounds(450,0,150,150);
+        knightButton.setActionCommand("prKnight");
+        knightButton.addActionListener(this);
+        queenButton.setVisible(false);
+        rookButton.setVisible(false);
+        bishopButton.setVisible(false);
+        knightButton.setVisible(false);
+
         this.setSize(800, 800);
         this.setVisible(true);
         this.setDoubleBuffered(true);
         this.addMouseListener(this);
+        this.add(queenButton);
+        this.add(rookButton);
+        this.add(bishopButton);
+        this.add(knightButton);
         frame = new JFrame("Springroll's Chess Engine");
         frame.setSize(817, 840);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -654,6 +683,26 @@ public class MainClass extends JPanel implements MouseListener{
 
     }
 
+    public void hideButtons(){
+        queenButton.setVisible(false);
+        rookButton.setVisible(false);
+        bishopButton.setVisible(false);
+        knightButton.setVisible(false);
+        frame.revalidate();
+    }
+
+    public void showButtons(){
+        queenButton.setVisible(true);
+        rookButton.setVisible(true);
+        bishopButton.setVisible(true);
+        knightButton.setVisible(true);
+        frame.revalidate();
+    }
+
+    public void AIPromotePawn(){
+        //AI code here
+    }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -717,5 +766,20 @@ public class MainClass extends JPanel implements MouseListener{
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals(queenButton.getActionCommand())){
+            for (int i=0;i<board.length;i++){
+                //TODO finish this up and get pawn to promote
+            }
+        }else if(e.getActionCommand().equals(rookButton.getActionCommand())){
+
+        }else if(e.getActionCommand().equals(bishopButton.getActionCommand())){
+
+        }else if(e.getActionCommand().equals(knightButton.getActionCommand())){
+
+        }
     }
 }
