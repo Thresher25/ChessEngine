@@ -39,6 +39,8 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     public short grabbedPiece;
     public boolean movingPiece = false;
     public static boolean isWhiteTurn = true;
+    public boolean buttonClicked = false;
+    public short pawnPromoteTo = 0;
     public JButton queenButton, rookButton, bishopButton, knightButton;
     boolean KingWMoved = false, KingBMoved = false, RookW00Moved = false, RookW70Moved = false, RookB07Moved = false, RookB77Moved = false;
     public short x1 = 0, y1 = 0;
@@ -52,6 +54,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         while(true){
             Thread.sleep(20);
             mc.frame.repaint();
+            mc.update();
         }
 
     }
@@ -700,9 +703,28 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     }
 
     public void AIPromotePawn(){
-        //AI code here
+        if(isWhiteTurn){
+            pawnPromoteTo = QueenW;
+        }else{
+            pawnPromoteTo = QueenB;
+        }
+
     }
 
+    public void update(){
+        if(buttonClicked){
+            if(pawnPromoteTo!=0){
+                for (int i = 0; i < board.length; i++) {
+                    if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
+                        board[i] = pawnPromoteTo;
+                        pawnPromoteTo = 0;
+                        buttonClicked = false;
+                        hideButtons();
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -716,45 +738,57 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(!movingPiece){
-            x1 = (short)(e.getX()/100);
-            y1 = (short)(7-(e.getY()/100));
-            if(board[y1*8+x1]!=0){
-                if(isWhiteTurn){
-                    if(board[y1*8+x1]/10==2){
-                        movingPiece = true;
-                        grabbedPiece = board[y1*8+x1];
-                    }
-                }else{
-                    if(board[y1*8+x1]/10==1){
-                        movingPiece = true;
-                        grabbedPiece = board[y1*8+x1];
+        if (!buttonClicked){
+            if (!movingPiece) {
+                x1 = (short) (e.getX() / 100);
+                y1 = (short) (7 - (e.getY() / 100));
+                if (board[y1 * 8 + x1] != 0) {
+                    if (isWhiteTurn) {
+                        if (board[y1 * 8 + x1] / 10 == 2) {
+                            movingPiece = true;
+                            grabbedPiece = board[y1 * 8 + x1];
+                        }
+                    } else {
+                        if (board[y1 * 8 + x1] / 10 == 1) {
+                            movingPiece = true;
+                            grabbedPiece = board[y1 * 8 + x1];
+                        }
                     }
                 }
+            } else {
+                short x2 = (short) (e.getX() / 100);
+                short y2 = (short) (7 - (e.getY() / 100));
+                //check if legal
+                String attemptMove = "";
+                if (board[y2 * 8 + x2] == 0) {
+                    attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + "00");
+                } else {
+                    attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
+                }
+                if (isLegalMove(isWhiteTurn, attemptMove)) {
+                    playMove(board, attemptMove);
+                    for (int i = 0; i < board.length; i++) {
+                        if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
+                            if (isWhiteTurn) {
+                                showButtons();
+                                buttonClicked = true;
+                            } else {
+                                AIPromotePawn();
+                                board[i] = pawnPromoteTo;
+                                pawnPromoteTo = 0;
+                            }
+                        }
+                    }
+                    isWhiteTurn = !isWhiteTurn;
+                    System.out.println("Legal Move");
+                    moves += attemptMove;
+                } else {
+                    System.out.println("Illegal move");
+                }
+                grabbedPiece = 0;
+                movingPiece = false;
+                System.out.println("Move made, is it whites turn next:  " + isWhiteTurn);
             }
-        }else{
-            short x2 = (short)(e.getX()/100);
-            short y2 = (short)(7-(e.getY()/100));
-            //check if legal
-            String attemptMove = "";
-            if(board[y2*8+x2]==0){
-                attemptMove = (""+x1+""+y1+""+x2+""+y2+""+"00");
-            }else{
-                attemptMove = (""+x1+""+y1+""+x2+""+y2+""+board[y2*8+x2]);
-            }
-            if(isLegalMove(isWhiteTurn,attemptMove)){
-                //board[y1*8+x1] = 0;
-                //board[y2*8+x2] = grabbedPiece;
-                playMove(board,attemptMove);
-                isWhiteTurn = !isWhiteTurn;
-                System.out.println("Legal Move");
-                moves+=attemptMove;
-            }else{
-                System.out.println("Illegal move");
-            }
-            grabbedPiece = 0;
-            movingPiece = false;
-            System.out.println("Move made, is it whites turn next:  "+isWhiteTurn);
         }
     }
 
@@ -771,15 +805,29 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals(queenButton.getActionCommand())){
-            for (int i=0;i<board.length;i++){
-                //TODO finish this up and get pawn to promote
+            if(!isWhiteTurn){
+                pawnPromoteTo = QueenW;
+            }else{
+                pawnPromoteTo = QueenB;
             }
         }else if(e.getActionCommand().equals(rookButton.getActionCommand())){
-
+            if(!isWhiteTurn){
+                pawnPromoteTo = RookW;
+            }else{
+                pawnPromoteTo = RookB;
+            }
         }else if(e.getActionCommand().equals(bishopButton.getActionCommand())){
-
+            if(!isWhiteTurn){
+                pawnPromoteTo = BishopW;
+            }else{
+                pawnPromoteTo = BishopB;
+            }
         }else if(e.getActionCommand().equals(knightButton.getActionCommand())){
-
+            if(!isWhiteTurn){
+                pawnPromoteTo = KnightW;
+            }else{
+                pawnPromoteTo = KnightB;
+            }
         }
     }
 }
