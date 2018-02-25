@@ -479,14 +479,84 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         System.out.println(movesNow);
         boolean valid = false;
         for(int i=0;i<movesNow.length();i+=6){
-            if(toMove.equals(movesNow.substring(i,i+6))){
+            if(toMove.equals(movesNow.substring(i,i+6))){ //Is this move even possible to make (by moving piece rules only)
                 valid = true;
+            }
+        }
+        if( (board[iy*8+ix]==KingW || board[iy*8+ix]==KingB) && valid && (dx-ix==-2 || dx-ix==2) ){//if the move is a castle, and it is permitte
+            String tempMoves = genMoves(testBoard,!whiteToMove);// then check if the castle is allowed, aka no castling out of checks
+            int tempSafeKings = 0;
+            int tempMaxMoves = tempMoves.length()/6;
+            for(int i=0;i<tempMoves.length();i+=6){
+                short pix = Short.parseShort(tempMoves.substring(i,i+6).substring(0,1));
+                short piy = Short.parseShort(tempMoves.substring(i,i+6).substring(1,2));
+                short pdx = Short.parseShort(tempMoves.substring(i,i+6).substring(2,3));
+                short pdy = Short.parseShort(tempMoves.substring(i,i+6).substring(3,4));
+                short pcapPiece = Short.parseShort(tempMoves.substring(i,i+6).substring(4,6));
+                short[] temp = testBoard.clone();
+                playMove(temp,pix,piy,pdx,pdy,pcapPiece);
+                if(whiteToMove){
+                    for(int k=0;k<temp.length;k++){
+                        if(temp[k]==KingW){
+                            tempSafeKings++;
+                        }
+                    }
+                }else{
+                    for(int k=0;k<temp.length;k++){
+                        if(temp[k]==KingB){
+                            tempSafeKings++;
+                        }
+                    }
+                }
+            }
+            if(tempSafeKings!=tempMaxMoves){
+                valid=false;
+            }
+            boolean movingRight;
+            if(dx-ix==2){
+                movingRight = true;
+            }else{
+                movingRight = false;
+            }
+            short temptestBoard[] = board.clone();
+            if(movingRight){
+                playMove(temptestBoard,ix,iy,(short)(dx-1),dy,capPiece);
+            }else{
+                playMove(temptestBoard,ix,iy,(short)(dx+1),dy,capPiece);
+            }
+           tempMoves = genMoves(testBoard,!whiteToMove);
+            tempSafeKings = 0;
+            tempMaxMoves = tempMoves.length()/6;
+            for(int i=0;i<tempMoves.length();i+=6){
+                short pix = Short.parseShort(tempMoves.substring(i,i+6).substring(0,1));
+                short piy = Short.parseShort(tempMoves.substring(i,i+6).substring(1,2));
+                short pdx = Short.parseShort(tempMoves.substring(i,i+6).substring(2,3));
+                short pdy = Short.parseShort(tempMoves.substring(i,i+6).substring(3,4));
+                short pcapPiece = Short.parseShort(tempMoves.substring(i,i+6).substring(4,6));
+                short[] temp = temptestBoard.clone();
+                playMove(temp,pix,piy,pdx,pdy,pcapPiece);
+                if(whiteToMove){
+                    for(int k=0;k<temp.length;k++){
+                        if(temp[k]==KingW){
+                            tempSafeKings++;
+                        }
+                    }
+                }else{
+                    for(int k=0;k<temp.length;k++){
+                        if(temp[k]==KingB){
+                            tempSafeKings++;
+                        }
+                    }
+                }
+            }
+            if(tempSafeKings!=tempMaxMoves){
+                valid=false;
             }
         }
         if(!valid){
             return false;
         }
-        playMove(testBoard,ix,iy,dx,dy,capPiece);
+        playMove(testBoard,ix,iy,dx,dy,capPiece);//play the move, later we check if it breaks any other rules
         boolean KingCaptured = false;
         String possibleMoves = genMoves(testBoard,!whiteToMove);
         System.out.println(possibleMoves);
