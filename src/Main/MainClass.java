@@ -39,9 +39,10 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     public short grabbedPiece;
     public boolean movingPiece = false;
     public static boolean isWhiteTurn = true;
+    public static boolean AIPlaysWhite = false;
     public boolean buttonClicked = false;
     public short pawnPromoteTo = 0;
-    public JButton queenButton, rookButton, bishopButton, knightButton;
+    public JButton queenButton, rookButton, bishopButton, knightButton, aiWhiteButton, aiBlackButton;
     boolean KingWMoved = false, KingBMoved = false, RookW00Moved = false, RookW70Moved = false, RookB07Moved = false, RookB77Moved = false;
     public short x1 = 0, y1 = 0;
     public BufferedImage boardImage, KingWImage, QueenWImage, RookWImage, BishopWImage, KnightWImage, PawnWImage, KingBImage, QueenBImage, RookBImage, BishopBImage, KnightBImage, PawnBImage;
@@ -100,6 +101,16 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         rookButton.setVisible(false);
         bishopButton.setVisible(false);
         knightButton.setVisible(false);
+        aiWhiteButton = new JButton("AI Plays White");
+        aiWhiteButton.setVisible(true);
+        aiWhiteButton.setBounds(0,0,800,400);
+        aiWhiteButton.setActionCommand("AIWhite");
+        aiWhiteButton.addActionListener(this);
+        aiBlackButton = new JButton("AI Plays Black");
+        aiBlackButton.setVisible(true);
+        aiBlackButton.setBounds(0,400,800,400);
+        aiBlackButton.setActionCommand("AIWhite");
+        aiBlackButton.addActionListener(this);
 
         this.setSize(800, 800);
         this.setVisible(true);
@@ -109,6 +120,8 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         this.add(rookButton);
         this.add(bishopButton);
         this.add(knightButton);
+        this.add(aiWhiteButton);
+        this.add(aiBlackButton);
         frame = new JFrame("Springroll's Chess Engine");
         frame.setSize(817, 840);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -459,6 +472,19 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }
          }
          return possMoves;
+    }
+
+    public String genAllLegalMoves(short[] board, boolean whiteToMove){
+        String legalMoves = "";
+        String candidateMoves = genMoves(board,whiteToMove);
+
+        for (int i = 0; i < candidateMoves.length(); i+=6) {
+            String pTempMove = candidateMoves.substring(i,i+6);
+            if(isLegalMove(whiteToMove, pTempMove)){
+                legalMoves+=pTempMove;
+            }
+        }
+        return legalMoves;
     }
 
     public void printAr(short[] p){
@@ -898,6 +924,16 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }else{
                 pawnPromoteTo = KnightB;
             }
+        }else if(e.getActionCommand().equals(aiWhiteButton.getActionCommand())){
+            AIPlaysWhite = true;
+            aiWhiteButton.setVisible(false);
+            aiBlackButton.setVisible(false);
+            frame.revalidate();
+        }else if(e.getActionCommand().equals(aiBlackButton.getActionCommand())){
+            AIPlaysWhite = false;
+            aiWhiteButton.setVisible(false);
+            aiBlackButton.setVisible(false);
+            frame.revalidate();
         }
     }
 }
