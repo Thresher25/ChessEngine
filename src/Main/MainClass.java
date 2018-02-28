@@ -54,7 +54,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         MainClass mc = new MainClass();
 
         while(true){
-            Thread.sleep(20);
+            Thread.sleep(15);
             mc.frame.repaint();
             mc.update();
         }
@@ -483,7 +483,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
          return possMoves;
     }
 
-    public String genAllLegalMoves(short[] board, boolean whiteToMove){
+    public static String genAllLegalMoves(short[] board, boolean whiteToMove){
         String legalMoves = "";
         String candidateMoves = genMoves(board,whiteToMove);
 

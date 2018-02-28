@@ -166,4 +166,70 @@ public class ChessAI {
         return value;
     }
 
+    public long evalPosition(short[] pboard){
+        short[] testBoard = pboard.clone();
+        long value = 0;
+        for (int i = 0; i < testBoard.length; i++) {
+            switch(testBoard[i]){
+                case PawnW:
+                    value+=100;
+                    value+=PawnPosVals[i];
+                    break;
+                case KnightW:
+                    value+=300;
+                    value+=KnightPosVals[i];
+                    break;
+                case BishopW:
+                    value+=325;
+                    value+=BishopPosVals[i];
+                    break;
+                case RookW:
+                    value+=500;
+                    value+=RookPosVals[i];
+                    break;
+                case QueenW:
+                    value+=900;
+                    value+=QueenPosVals[i];
+                    break;
+                case KingW:
+                    value+=10000;
+                    if(inEndGame){
+                        value+=KingEndGamePosVals[i];
+                    }else{
+                        value+=KingMiddleGamePosVals[i];
+                    }
+                    break;
+                case PawnB:
+                    value-=100;
+                    value-=PawnPosVals[64-i];
+                    break;
+                case KnightB:
+                    value-=300;
+                    value-=KnightPosVals[64-i];
+                    break;
+                case BishopB:
+                    value-=325;
+                    value-=BishopPosVals[64-i];
+                    break;
+                case RookB:
+                    value-=500;
+                    value-=RookPosVals[64-i];
+                    break;
+                case QueenB:
+                    value-=900;
+                    value-=QueenPosVals[64-i];
+                    break;
+                case KingB:
+                    value-=10000;
+                    if(inEndGame){
+                        value-=KingEndGamePosVals[64-i];
+                    }else{
+                        value-=KingMiddleGamePosVals[64-i];
+                    }
+                    break;
+            }
+        }
+        return value;
+    }
+
 }
