@@ -26,7 +26,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                               00,00,00,00,00,00,00,00,
                               00,00,00,00,00,00,00,00,};*/
 
-        public short[] board = {23,25,24,22,21,24,25,23,
+        public static short[] board = {23,25,24,22,21,24,25,23,
                                 26,26,26,26,26,26,26,26,
                                 00,00,00,00,00,00,00,00,
                                 00,00,00,00,00,00,00,00,
@@ -40,13 +40,14 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     public boolean movingPiece = false;
     public static boolean isWhiteTurn = true;
     public static boolean AIPlaysWhite = false;
+    public ChessAI chessAI = new ChessAI();
     public boolean buttonClicked = false;
-    public short pawnPromoteTo = 0;
+    public static short pawnPromoteTo = 0;
     public JButton queenButton, rookButton, bishopButton, knightButton, aiWhiteButton, aiBlackButton;
-    boolean KingWMoved = false, KingBMoved = false, RookW00Moved = false, RookW70Moved = false, RookB07Moved = false, RookB77Moved = false;
+    public static boolean KingWMoved = false, KingBMoved = false, RookW00Moved = false, RookW70Moved = false, RookB07Moved = false, RookB77Moved = false;
     public short x1 = 0, y1 = 0;
     public BufferedImage boardImage, KingWImage, QueenWImage, RookWImage, BishopWImage, KnightWImage, PawnWImage, KingBImage, QueenBImage, RookBImage, BishopBImage, KnightBImage, PawnBImage;
-    public String moves = "000000";//a move is a 6 char long string in the format of x1,y1,x2,y2,b or w or e + first letter of piece. example (111306) - piece at b1 moves to b3 captures piece type 06 (White pawn)
+    public static String moves = "000000";//a move is a 6 char long string in the format of x1,y1,x2,y2,b or w or e + first letter of piece. example (111306) - piece at b1 moves to b3 captures piece type 06 (White pawn)
 
     public static void main(String...args)throws Exception{
 
@@ -109,7 +110,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         aiBlackButton = new JButton("AI Plays Black");
         aiBlackButton.setVisible(true);
         aiBlackButton.setBounds(0,400,800,400);
-        aiBlackButton.setActionCommand("AIWhite");
+        aiBlackButton.setActionCommand("AIBlack");
         aiBlackButton.addActionListener(this);
 
         this.setSize(800, 800);
@@ -130,7 +131,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         frame.repaint();
     }
 
-    public String genMoves(short[] board, boolean whiteToMove){
+    public static String genMoves(short[] board, boolean whiteToMove){
         String possMoves = "";
          for(int i=0;i<board.length;i++) {
              short px = (short)(i%8);
@@ -493,7 +494,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         }
     }
 
-    public boolean isLegalMove(boolean whiteToMove, String toMove){
+    public static boolean isLegalMove(boolean whiteToMove, String toMove){
         short ix = Short.parseShort(toMove.substring(0,1));
         short iy = Short.parseShort(toMove.substring(1,2));
         short dx = Short.parseShort(toMove.substring(2,3));
@@ -631,7 +632,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         return !KingCaptured;
     }
 
-    public void playMove(short[] pBoard, short ix, short iy, short dx, short dy, short capPiece){
+    public static void playMove(short[] pBoard, short ix, short iy, short dx, short dy, short capPiece){
         if( (pBoard[iy*8+ix]==PawnW || pBoard[iy*8+ix]==PawnB) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]==0) ){//check for en passant
                 pBoard[iy*8+dx] = 0;
         }else if(pBoard[iy*8+ix]==KingW){
@@ -808,6 +809,18 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     }
 
     public void update(){
+        if(isWhiteTurn==AIPlaysWhite){
+            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn));
+            playMove(board,AIMove);
+            for (int i = 0; i < board.length; i++) {
+                if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
+                        pawnPromoteTo = chessAI.promotePawn(board,isWhiteTurn);
+                        board[i] = pawnPromoteTo;
+                        pawnPromoteTo = 0;
+                }
+            }
+            isWhiteTurn = !isWhiteTurn;
+        }
         if(buttonClicked){
             if(pawnPromoteTo!=0){
                 for (int i = 0; i < board.length; i++) {
@@ -835,7 +848,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     @Override
     public void mouseReleased(MouseEvent e) {
         if (!buttonClicked){
-            if (!movingPiece) {
+            if (!movingPiece && (!isWhiteTurn==AIPlaysWhite)) {
                 x1 = (short) (e.getX() / 100);
                 y1 = (short) (7 - (e.getY() / 100));
                 if (board[y1 * 8 + x1] != 0) {
@@ -851,7 +864,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         }
                     }
                 }
-            } else {
+            } else if(movingPiece && (!isWhiteTurn==AIPlaysWhite)) {
                 short x2 = (short) (e.getX() / 100);
                 short y2 = (short) (7 - (e.getY() / 100));
                 //check if legal
@@ -865,7 +878,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                     playMove(board, attemptMove);
                     for (int i = 0; i < board.length; i++) {
                         if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
-                            if (isWhiteTurn) {
+                            if (isWhiteTurn!=AIPlaysWhite) {
                                 showButtons();
                                 buttonClicked = true;
                             } else {
