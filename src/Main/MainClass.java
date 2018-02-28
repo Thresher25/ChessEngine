@@ -40,7 +40,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     public boolean movingPiece = false;
     public static boolean isWhiteTurn = true;
     public static boolean AIPlaysWhite = false;
-    public ChessAI chessAI = new ChessAI();
+    public ChessAI chessAI;
     public boolean buttonClicked = false;
     public static short pawnPromoteTo = 0;
     public JButton queenButton, rookButton, bishopButton, knightButton, aiWhiteButton, aiBlackButton;
@@ -186,11 +186,15 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 temp = 1;
                                 try{
                                     while(board[(py+temp*j)*8+(px+temp*k)]==0 && j!=0 && k!=0 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        if(temp*k!=0 && temp*j!=0){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        }
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        if(temp*k!=0 && temp*j!=0){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        }
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -371,11 +375,15 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 temp = 1;
                                 try{
                                     while(board[(py+temp*j)*8+(px+temp*k)]==0 && j!=0 && k!=0 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        if(temp*k!=0 && temp*j!=0){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        }
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        if(temp*k!=0 && temp*j!=0){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        }
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -502,8 +510,8 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         short capPiece = Short.parseShort(toMove.substring(4,6));
         short testBoard[] = board.clone();
         String movesNow = genMoves(board,whiteToMove);
-        System.out.println(toMove);
-        System.out.println(movesNow);
+        //System.out.println(toMove);
+        //System.out.println(movesNow);
         boolean valid = false;
         for(int i=0;i<movesNow.length();i+=6){
             if(toMove.equals(movesNow.substring(i,i+6))){ //Is this move even possible to make (by moving piece rules only)
@@ -586,7 +594,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         playMove(testBoard,ix,iy,dx,dy,capPiece);//play the move, later we check if it breaks any other rules
         boolean KingCaptured = false;
         String possibleMoves = genMoves(testBoard,!whiteToMove);
-        System.out.println(possibleMoves);
+        //System.out.println(possibleMoves);
         int maxMoves = possibleMoves.length()/6;
         int KingsSafe = 0;
         if(whiteToMove){
@@ -622,12 +630,12 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         }
         if(KingsSafe==maxMoves){
             KingCaptured = false;
-            System.out.println(maxMoves);
-            System.out.println(KingsSafe);
+            //System.out.println(maxMoves);
+            //System.out.println(KingsSafe);
         }else{
             KingCaptured = true;
-            System.out.println(maxMoves);
-            System.out.println(KingsSafe);
+            //System.out.println(maxMoves);
+            //System.out.println(KingsSafe);
         }
         return !KingCaptured;
     }
@@ -683,7 +691,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         pBoard[iy*8+ix] = 0;
     }
 
-    public void playMove(short[] pBoard, String playMove){
+    public static void playMove(short[] pBoard, String playMove){
         short ix = Short.parseShort(playMove.substring(0,1));
         short iy = Short.parseShort(playMove.substring(1,2));
         short dx = Short.parseShort(playMove.substring(2,3));
@@ -810,7 +818,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public void update(){
         if(isWhiteTurn==AIPlaysWhite){
-            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn));
+            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn),board);
             playMove(board,AIMove);
             for (int i = 0; i < board.length; i++) {
                 if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
@@ -939,11 +947,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }
         }else if(e.getActionCommand().equals(aiWhiteButton.getActionCommand())){
             AIPlaysWhite = true;
+            chessAI = new ChessAI(AIPlaysWhite);
             aiWhiteButton.setVisible(false);
             aiBlackButton.setVisible(false);
             frame.revalidate();
         }else if(e.getActionCommand().equals(aiBlackButton.getActionCommand())){
             AIPlaysWhite = false;
+            chessAI = new ChessAI(AIPlaysWhite);
             aiWhiteButton.setVisible(false);
             aiBlackButton.setVisible(false);
             frame.revalidate();
