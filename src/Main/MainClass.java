@@ -17,14 +17,14 @@ import java.io.InputStream;
 public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
-    /*public short[] board = {00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,11,00,21,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,};*/
+    //public static short[] board = {00,00,00,00,00,00,00,00,
+    //                          00,11,00,00,00,00,00,00,
+    //                          00,00,00,00,00,00,00,00,
+    //                          00,00,00,00,00,00,00,00,
+    //                          00,00,00,00,00,00,00,00,
+    //                          00,00,00,00,00,00,00,00,
+    //                          00,00,00,00,00,00,00,13,
+    //                          00,00,00,21,00,00,23,00,};
 
         public static short[] board = {23,25,24,22,21,24,25,23,
                                 26,26,26,26,26,26,26,26,
@@ -54,7 +54,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         MainClass mc = new MainClass();
 
         while(true){
-            Thread.sleep(15);
+            //Thread.sleep(15);
             mc.frame.repaint();
             mc.update();
         }
@@ -208,11 +208,15 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 temp = 1;
                                 try{
                                     while(board[(py+temp*j)*8+(px+temp*k)]==0 && ( (j!=0 && k==0) || (j==0 && k!=0) )  && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        }
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        }
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -357,11 +361,15 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 temp = 1;
                                 try{
                                     while(board[(py+temp*j)*8+(px+temp*k)]==0 && ( (j!=0 && k==0) || (j==0 && k!=0) )  && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                                        }
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
+                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        }
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -483,13 +491,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
          return possMoves;
     }
 
-    public static String genAllLegalMoves(short[] board, boolean whiteToMove){
+    public static String genAllLegalMoves(short[] pboard, boolean whiteToMove){
         String legalMoves = "";
-        String candidateMoves = genMoves(board,whiteToMove);
+        String candidateMoves = genMoves(pboard,whiteToMove);
 
         for (int i = 0; i < candidateMoves.length(); i+=6) {
             String pTempMove = candidateMoves.substring(i,i+6);
-            if(isLegalMove(whiteToMove, pTempMove)){
+            if(isLegalMove(whiteToMove, pTempMove, pboard)){
                 legalMoves+=pTempMove;
             }
         }
@@ -502,7 +510,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         }
     }
 
-    public static boolean isLegalMove(boolean whiteToMove, String toMove){
+    public static boolean isLegalMove(boolean whiteToMove, String toMove, short[] board){
         short ix = Short.parseShort(toMove.substring(0,1));
         short iy = Short.parseShort(toMove.substring(1,2));
         short dx = Short.parseShort(toMove.substring(2,3));
@@ -818,7 +826,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public void update(){
         if(isWhiteTurn==AIPlaysWhite){
-            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn),board);
+            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn),board,isWhiteTurn,AIPlaysWhite);
             playMove(board,AIMove);
             for (int i = 0; i < board.length; i++) {
                 if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
@@ -882,7 +890,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 } else {
                     attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
                 }
-                if (isLegalMove(isWhiteTurn, attemptMove)) {
+                if (isLegalMove(isWhiteTurn, attemptMove, board)) {
                     playMove(board, attemptMove);
                     for (int i = 0; i < board.length; i++) {
                         if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {

@@ -66,29 +66,46 @@ public class ChessAI {
                                                 -50,-30,-30,-30,-30,-30,-30,-50};
     public boolean playsAsWhite = true;
     public boolean inEndGame = false;
+    int numcalcs = 0;
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public ChessAI(boolean playsWhite) {
         playsAsWhite = playsWhite;
     }
 
-    public String pickMove(String posLegalMoves, short[] pboard){
-        String bestMove = posLegalMoves.substring(0,6);
-        for (int i = 6; i < posLegalMoves.length(); i+=6) {
-            if(playsAsWhite){
-                if(evalPosition(posLegalMoves.substring(i,i+6),pboard)>evalPosition(bestMove,pboard)){
-                    bestMove = posLegalMoves.substring(i,i+6);
-                }
+    public String pickMove(String posLegalMoves, short[] pboard, boolean whiteTurn, boolean maxingWhite){
+            int depth = 3;
+            short[] testBoard = pboard.clone();
+            String posMoves = posLegalMoves;
+            String candidateMove = "";
+            long pval;
+            if(whiteTurn){
+                pval = -1000000;
             }else{
-                if(evalPosition(posLegalMoves.substring(i,i+6),pboard)<evalPosition(bestMove,pboard)){
-                    bestMove = posLegalMoves.substring(i,i+6);
+                pval = 1000000;
+            }
+
+            for (int i = 0; i < posMoves.length(); i+=6) {
+                long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
+                if(maxingWhite){
+                    if(r>pval){
+                        pval = r;
+                        candidateMove = posMoves.substring(i,i+6);
+                    }
+                }else{
+                    if(r<pval){
+                        pval = r;
+                        candidateMove = posMoves.substring(i,i+6);
+                    }
                 }
             }
 
-        }
         if(MainClass.moves.length()/6>30){
             inEndGame = true;
         }
-        return bestMove;
+        System.out.println(candidateMove);
+        System.out.println("Number of positions evaluated: "+numcalcs);
+        numcalcs = 0;
+        return candidateMove;
     }
 
     public short promotePawn(short[] pboard, boolean isWhiteToMove){
@@ -99,66 +116,99 @@ public class ChessAI {
         }
     }
 
+    public long getBestMove(short[] pboard, boolean whiteTurn, int depth, String moveToPlay){
+        short[] testBoard = pboard.clone();
+        MainClass.playMove(testBoard,moveToPlay);
+        if(depth<=0){
+            numcalcs++;
+            return evalPosition(testBoard);
+        }
+
+        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn);
+        long pval;
+        if(whiteTurn){
+            pval = -1000000;
+        }else{
+            pval = 1000000;
+        }
+
+        for (int i = 0; i < posMoves.length(); i+=6) {
+            long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
+            if(whiteTurn){
+                if(r>pval){
+                    pval = r;
+                }
+            }else{
+                if(r<pval){
+                    pval = r;
+                }
+            }
+        }
+        return pval;
+    }
+
     public long evalPosition(String pMove, short[] pboard){
         short[] testBoard = pboard.clone();
-        MainClass.playMove(testBoard, pMove);//TODO perhaps this can be moved into this Class, might be more efficient? (look into this)
+        MainClass.playMove(testBoard, pMove);
         long value = 0;
         for (int i = 0; i < testBoard.length; i++) {
+            int x = i%8;
+            int y = i/8;
             switch(testBoard[i]){
                 case PawnW:
                     value+=100;
-                    value+=PawnPosVals[i];
+                    value+=PawnPosVals[(7-y)*8+x];
                     break;
                 case KnightW:
                     value+=300;
-                    value+=KnightPosVals[i];
+                    value+=KnightPosVals[(7-y)*8+x];
                     break;
                 case BishopW:
                     value+=325;
-                    value+=BishopPosVals[i];
+                    value+=BishopPosVals[(7-y)*8+x];
                     break;
                 case RookW:
                     value+=500;
-                    value+=RookPosVals[i];
+                    value+=RookPosVals[(7-y)*8+x];
                     break;
                 case QueenW:
                     value+=900;
-                    value+=QueenPosVals[i];
+                    value+=QueenPosVals[(7-y)*8+x];
                     break;
                 case KingW:
                     value+=10000;
                     if(inEndGame){
-                        value+=KingEndGamePosVals[i];
+                        value+=KingEndGamePosVals[(7-y)*8+x];
                     }else{
-                        value+=KingMiddleGamePosVals[i];
+                        value+=KingMiddleGamePosVals[(7-y)*8+x];
                     }
                     break;
                 case PawnB:
                     value-=100;
-                    value-=PawnPosVals[64-i];
+                    value-=PawnPosVals[i];
                     break;
                 case KnightB:
                     value-=300;
-                    value-=KnightPosVals[64-i];
+                    value-=KnightPosVals[i];
                     break;
                 case BishopB:
                     value-=325;
-                    value-=BishopPosVals[64-i];
+                    value-=BishopPosVals[i];
                     break;
                 case RookB:
                     value-=500;
-                    value-=RookPosVals[64-i];
+                    value-=RookPosVals[i];
                     break;
                 case QueenB:
                     value-=900;
-                    value-=QueenPosVals[64-i];
+                    value-=QueenPosVals[i];
                     break;
                 case KingB:
                     value-=10000;
                     if(inEndGame){
-                        value-=KingEndGamePosVals[64-i];
+                        value-=KingEndGamePosVals[i];
                     }else{
-                        value-=KingMiddleGamePosVals[64-i];
+                        value-=KingMiddleGamePosVals[i];
                     }
                     break;
             }
@@ -170,61 +220,63 @@ public class ChessAI {
         short[] testBoard = pboard.clone();
         long value = 0;
         for (int i = 0; i < testBoard.length; i++) {
+            int x = i%8;
+            int y = i/8;
             switch(testBoard[i]){
                 case PawnW:
                     value+=100;
-                    value+=PawnPosVals[i];
+                    value+=PawnPosVals[(7-y)*8+x];
                     break;
                 case KnightW:
                     value+=300;
-                    value+=KnightPosVals[i];
+                    value+=KnightPosVals[(7-y)*8+x];
                     break;
                 case BishopW:
                     value+=325;
-                    value+=BishopPosVals[i];
+                    value+=BishopPosVals[(7-y)*8+x];
                     break;
                 case RookW:
                     value+=500;
-                    value+=RookPosVals[i];
+                    value+=RookPosVals[(7-y)*8+x];
                     break;
                 case QueenW:
                     value+=900;
-                    value+=QueenPosVals[i];
+                    value+=QueenPosVals[(7-y)*8+x];
                     break;
                 case KingW:
                     value+=10000;
                     if(inEndGame){
-                        value+=KingEndGamePosVals[i];
+                        value+=KingEndGamePosVals[(7-y)*8+x];
                     }else{
-                        value+=KingMiddleGamePosVals[i];
+                        value+=KingMiddleGamePosVals[(7-y)*8+x];
                     }
                     break;
                 case PawnB:
                     value-=100;
-                    value-=PawnPosVals[64-i];
+                    value-=PawnPosVals[i];
                     break;
                 case KnightB:
                     value-=300;
-                    value-=KnightPosVals[64-i];
+                    value-=KnightPosVals[i];
                     break;
                 case BishopB:
                     value-=325;
-                    value-=BishopPosVals[64-i];
+                    value-=BishopPosVals[i];
                     break;
                 case RookB:
                     value-=500;
-                    value-=RookPosVals[64-i];
+                    value-=RookPosVals[i];
                     break;
                 case QueenB:
                     value-=900;
-                    value-=QueenPosVals[64-i];
+                    value-=QueenPosVals[i];
                     break;
                 case KingB:
                     value-=10000;
                     if(inEndGame){
-                        value-=KingEndGamePosVals[64-i];
+                        value-=KingEndGamePosVals[i];
                     }else{
-                        value-=KingMiddleGamePosVals[64-i];
+                        value-=KingMiddleGamePosVals[i];
                     }
                     break;
             }
