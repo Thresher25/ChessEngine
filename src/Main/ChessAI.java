@@ -105,6 +105,12 @@ public class ChessAI {
         System.out.println(candidateMove);
         System.out.println("Number of positions evaluated: "+numcalcs);
         numcalcs = 0;
+        if(candidateMove.equals("")){
+            System.out.println();
+            System.out.println("AI Doesn't want to make a move!");
+            System.out.println();
+            return posLegalMoves.substring(0,6);
+        }
         return candidateMove;
     }
 
@@ -151,6 +157,9 @@ public class ChessAI {
         short[] testBoard = pboard.clone();
         MainClass.playMove(testBoard, pMove);
         long value = 0;
+        //if(MainClass.genAllLegalMoves(testBoard,true).length()==0 || MainClass.genAllLegalMoves(testBoard,false).length()==0){//check for a Stalemate
+        //    return 0;
+        //}
         for (int i = 0; i < testBoard.length; i++) {
             int x = i%8;
             int y = i/8;

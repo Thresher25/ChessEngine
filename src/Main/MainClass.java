@@ -17,23 +17,23 @@ import java.io.InputStream;
 public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
-    //public static short[] board = {00,00,00,00,00,00,00,00,
-    //                          00,11,00,00,00,00,00,00,
-    //                          00,00,00,00,00,00,00,00,
-    //                          00,00,00,00,00,00,00,00,
-    //                          00,00,00,00,00,00,00,00,
-    //                          00,00,00,00,00,00,00,00,
-    //                          00,00,00,00,00,00,00,13,
-    //                          00,00,00,21,00,00,23,00,};
+    public static short[] board = {00,00,00,00,00,00,00,00,
+                              00,11,00,00,00,00,00,00,
+                              00,00,00,00,00,00,00,00,
+                              00,00,00,00,21,00,00,00,
+                              00,00,00,00,00,00,00,00,
+                              00,00,00,00,00,00,00,00,
+                              00,00,00,00,00,00,26,00,
+                              00,00,00,00,00,00,00,00,};
 
-        public static short[] board = {23,25,24,22,21,24,25,23,
-                                26,26,26,26,26,26,26,26,
-                                00,00,00,00,00,00,00,00,
-                                00,00,00,00,00,00,00,00,
-                                00,00,00,00,00,00,00,00,
-                                00,00,00,00,00,00,00,00,
-                                16,16,16,16,16,16,16,16,
-                                13,15,14,12,11,14,15,13};
+    //public static short[] board = {23,25,24,22,21,24,25,23,
+    //                               26,26,26,26,26,26,26,26,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               16,16,16,16,16,16,16,16,
+    //                               13,15,14,12,11,14,15,13};
 
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -45,7 +45,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     public static short pawnPromoteTo = 0;
     public JButton queenButton, rookButton, bishopButton, knightButton, aiWhiteButton, aiBlackButton;
     public static boolean KingWMoved = false, KingBMoved = false, RookW00Moved = false, RookW70Moved = false, RookB07Moved = false, RookB77Moved = false;
-    public short x1 = 0, y1 = 0;
+    public short x1 = 0, y1 = 0, x2=0, y2=0;
     public BufferedImage boardImage, KingWImage, QueenWImage, RookWImage, BishopWImage, KnightWImage, PawnWImage, KingBImage, QueenBImage, RookBImage, BishopBImage, KnightBImage, PawnBImage;
     public static String moves = "000000";//a move is a 6 char long string in the format of x1,y1,x2,y2,b or w or e + first letter of piece. example (111306) - piece at b1 moves to b3 captures piece type 06 (White pawn)
 
@@ -54,7 +54,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         MainClass mc = new MainClass();
 
         while(true){
-            //Thread.sleep(15);
+            Thread.sleep(15);
             mc.frame.repaint();
             mc.update();
         }
@@ -156,9 +156,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                         }
-                        if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0){
+                        if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0 && (board[4]==KingW && board[0]==RookW) ){
                             possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
-                        }else if(!KingWMoved && !RookW70Moved && board[5]==0 && board[6]==0){
+                        }else if(!KingWMoved && !RookW70Moved && board[5]==0 && board[6]==0 && (board[4]==KingW && board[7]==RookW) ){
                             possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
                         }
                         break;
@@ -289,22 +289,57 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 possMoves+=""+px+""+py+""+(px)+""+(py+2)+"00";
                             }
                         }else if(board[(py+1)*8+px]==0){
-                            possMoves+=""+px+""+py+""+(px)+""+(py+1)+"00";
+                            if(py==6){
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"22";
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"23";
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"24";
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"25";
+                            }else{
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"00";
+                            }
                         }
                         if(px==0){
                             if(board[(py+1)*8+(px+1)]/10==1){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                if(py==6){
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"22";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"23";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"24";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"25";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                }
                             }
                         }else if(px==7){
                             if(board[(py+1)*8+(px-1)]/10==1){
-                                possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                if(py==6){
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"22";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"23";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"24";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"25";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                }
                             }
                         }else{
                             if(board[(py+1)*8+(px-1)]/10==1){
-                                possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                if(py==6){
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"22";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"23";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"24";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"25";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                }
                             }
                             if(board[(py+1)*8+(px+1)]/10==1){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                if(py==6){
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"22";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"23";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"24";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"25";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                }
                             }
                         }
                         break;
@@ -331,9 +366,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                         }
-                        if(!KingBMoved && !RookB07Moved && board[(7)*8+1]==0 && board[(7)*8+2]==0 && board[(7)*8+3]==0){
+                        if(!KingBMoved && !RookB07Moved && board[(7)*8+1]==0 && board[(7)*8+2]==0 && board[(7)*8+3]==0 && (board[7*8+4]==KingB && board[7*8]==RookB) ){
                             possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
-                        }else if(!KingBMoved && !RookB77Moved && board[(7)*8+5]==0 && board[(7)*8+6]==0){
+                        }else if(!KingBMoved && !RookB77Moved && board[(7)*8+5]==0 && board[(7)*8+6]==0 && (board[7*8+4]==KingB && board[7*8+7]==RookB) ){
                             possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
                         }
                         break;
@@ -464,22 +499,57 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 possMoves+=""+px+""+py+""+(px)+""+(py-2)+"00";
                             }
                         }else if(board[(py-1)*8+px]==0){
-                            possMoves+=""+px+""+py+""+(px)+""+(py-1)+"00";
+                            if(py==1){
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"12";
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"13";
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"14";
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"15";
+                            }else{
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"00";
+                            }
                         }
                         if(px==0){
                             if(board[(py-1)*8+(px+1)]/10==2 && board[(py-1)*8+(px+1)]!=0){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                if(py==1){
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"12";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"13";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"14";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"15";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                }
                             }
                         }else if(px==7){
                             if(board[(py-1)*8+(px-1)]/10==2 && board[(py-1)*8+(px-1)]!=0){
-                                possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                if(py==1){
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"12";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"13";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"14";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"15";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                }
                             }
                         }else{
                             if(board[(py-1)*8+(px-1)]/10==2 && board[(py-1)*8+(px-1)]!=0){
-                                possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                if(py==1){
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"12";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"13";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"14";
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"15";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                }
                             }
                             if(board[(py-1)*8+(px+1)]/10==2 && board[(py-1)*8+(px+1)]!=0){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                if(py==1){
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"12";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"13";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"14";
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"15";
+                                }else{
+                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                }
                             }
                         }
                         break;
@@ -695,8 +765,14 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             RookB77Moved = true;
         }
 
-        pBoard[dy*8+dx] = pBoard[iy*8+ix];
-        pBoard[iy*8+ix] = 0;
+        if( ( (pBoard[iy*8+ix]==PawnW && dy==7) || (pBoard[iy*8+ix]==PawnB && dy==0) ) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]!=0) ){
+            pBoard[iy*8+ix] = 0;
+            pBoard[dy*8+dx] = capPiece;
+        }else{
+            pBoard[dy*8+dx] = pBoard[iy*8+ix];
+            pBoard[iy*8+ix] = 0;
+        }
+
     }
 
     public static void playMove(short[] pBoard, String playMove){
@@ -741,9 +817,23 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                     RookB77Moved = true;
                 }
             }
+        }else if(iy==0 && ix==0 && pBoard[iy*8+ix]==RookW && pBoard==board){
+            RookW00Moved = true;
+        }else if(iy==7 && ix==0 && pBoard[iy*8+ix]==RookB && pBoard==board){
+            RookB07Moved = true;
+        }else if(iy==0 && ix==7 && pBoard[iy*8+ix]==RookW && pBoard==board){
+            RookW70Moved = true;
+        }else if(iy==7 && ix==7 && pBoard[iy*8+ix]==RookB && pBoard==board){
+            RookB77Moved = true;
         }
-        pBoard[dy*8+dx] = pBoard[iy*8+ix];
-        pBoard[iy*8+ix] = 0;
+
+        if( ( (pBoard[iy*8+ix]==PawnW && dy==7) || (pBoard[iy*8+ix]==PawnB && dy==0) )){
+            pBoard[iy*8+ix] = 0;
+            pBoard[dy*8+dx] = capPiece;
+        }else{
+            pBoard[dy*8+dx] = pBoard[iy*8+ix];
+            pBoard[iy*8+ix] = 0;
+        }
     }
 
     @Override
@@ -797,6 +887,21 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }
         }
 
+        if(moves.length()/6!=1){
+            String lastMove = moves.substring(moves.length()-6);
+            short ix = Short.parseShort(lastMove.substring(0,1));
+            short iy = Short.parseShort(lastMove.substring(1,2));
+            short dx = Short.parseShort(lastMove.substring(2,3));
+            short dy = Short.parseShort(lastMove.substring(3,4));
+            g.setColor(new Color(255,255,102,85));
+            g.fillRect(ix*100,(7-iy)*100,100,100);
+            g.fillRect(dx*100,(7-dy)*100,100,100);
+            if(movingPiece){
+                g.setColor(new Color(106,90,205,125));
+                g.fillRect(x1*100,(7-y1)*100,100,100);
+            }
+        }
+
     }
 
     public void hideButtons(){
@@ -828,6 +933,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         if(isWhiteTurn==AIPlaysWhite){
             String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn),board,isWhiteTurn,AIPlaysWhite);
             playMove(board,AIMove);
+            moves+=AIMove;
             for (int i = 0; i < board.length; i++) {
                 if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
                         pawnPromoteTo = chessAI.promotePawn(board,isWhiteTurn);
@@ -839,14 +945,21 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         }
         if(buttonClicked){
             if(pawnPromoteTo!=0){
-                for (int i = 0; i < board.length; i++) {
-                    if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
-                        board[i] = pawnPromoteTo;
-                        pawnPromoteTo = 0;
-                        buttonClicked = false;
-                        hideButtons();
-                    }
+                String attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 +""+pawnPromoteTo);
+                if (isLegalMove(isWhiteTurn, attemptMove, board)) {
+                    playMove(board, attemptMove);
+                    isWhiteTurn = !isWhiteTurn;
+                    System.out.println("Legal Move");
+                    moves += attemptMove;
+                } else {
+                    System.out.println("Illegal move");
                 }
+                grabbedPiece = 0;
+                movingPiece = false;
+                System.out.println("Move made, is it whites turn next:  " + isWhiteTurn);
+                pawnPromoteTo = 0;
+                buttonClicked = false;
+                hideButtons();
             }
         }
     }
@@ -881,38 +994,41 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                     }
                 }
             } else if(movingPiece && (!isWhiteTurn==AIPlaysWhite)) {
-                short x2 = (short) (e.getX() / 100);
-                short y2 = (short) (7 - (e.getY() / 100));
+                x2 = (short) (e.getX() / 100);
+                y2 = (short) (7 - (e.getY() / 100));
                 //check if legal
                 String attemptMove = "";
-                if (board[y2 * 8 + x2] == 0) {
-                    attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + "00");
-                } else {
-                    attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
-                }
-                if (isLegalMove(isWhiteTurn, attemptMove, board)) {
-                    playMove(board, attemptMove);
-                    for (int i = 0; i < board.length; i++) {
-                        if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
-                            if (isWhiteTurn!=AIPlaysWhite) {
-                                showButtons();
-                                buttonClicked = true;
-                            } else {
-                                AIPromotePawn();
-                                board[i] = pawnPromoteTo;
-                                pawnPromoteTo = 0;
-                            }
-                        }
+                if(grabbedPiece!=PawnB && grabbedPiece!=PawnW){
+                    if (board[y2 * 8 + x2] == 0) {
+                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + "00");
+                    } else {
+                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
                     }
-                    isWhiteTurn = !isWhiteTurn;
-                    System.out.println("Legal Move");
-                    moves += attemptMove;
-                } else {
-                    System.out.println("Illegal move");
+                }else if(y2==0 || y2==7){
+                    showButtons();
+                    buttonClicked = true;
+                    attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 +"22");
+                }else{
+                    if (board[y2 * 8 + x2] == 0) {
+                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + "00");
+                    } else {
+                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
+                    }
                 }
-                grabbedPiece = 0;
-                movingPiece = false;
-                System.out.println("Move made, is it whites turn next:  " + isWhiteTurn);
+
+                if(!buttonClicked){
+                    if (isLegalMove(isWhiteTurn, attemptMove, board)) {
+                        playMove(board, attemptMove);
+                        isWhiteTurn = !isWhiteTurn;
+                        System.out.println("Legal Move");
+                        moves += attemptMove;
+                    } else{
+                        System.out.println("Illegal move");
+                    }
+                        grabbedPiece = 0;
+                        movingPiece = false;
+                        System.out.println("Move made, is it whites turn next:  " + isWhiteTurn);
+                }
             }
         }
     }
@@ -930,25 +1046,25 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals(queenButton.getActionCommand())){
-            if(!isWhiteTurn){
+            if(isWhiteTurn){
                 pawnPromoteTo = QueenW;
             }else{
                 pawnPromoteTo = QueenB;
             }
         }else if(e.getActionCommand().equals(rookButton.getActionCommand())){
-            if(!isWhiteTurn){
+            if(isWhiteTurn){
                 pawnPromoteTo = RookW;
             }else{
                 pawnPromoteTo = RookB;
             }
         }else if(e.getActionCommand().equals(bishopButton.getActionCommand())){
-            if(!isWhiteTurn){
+            if(isWhiteTurn){
                 pawnPromoteTo = BishopW;
             }else{
                 pawnPromoteTo = BishopB;
             }
         }else if(e.getActionCommand().equals(knightButton.getActionCommand())){
-            if(!isWhiteTurn){
+            if(isWhiteTurn){
                 pawnPromoteTo = KnightW;
             }else{
                 pawnPromoteTo = KnightB;
