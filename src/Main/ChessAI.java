@@ -92,6 +92,7 @@ public class ChessAI {
             }else{
                 depth=3;
             }
+        System.out.println(depth);
             String candidateMove = "";
             long pval;
             if(whiteTurn){
@@ -139,6 +140,18 @@ public class ChessAI {
 
     public long getBestMove(short[] pboard, boolean whiteTurn, int depth, String moveToPlay){
         short[] testBoard = pboard.clone();
+        if(MainClass.moves.length()/6>10){
+            String last10moves = MainClass.moves.substring(MainClass.moves.length()-(10*6));
+            int numreps = 0;
+            for(int k=0;k<last10moves.length();k+=6){
+                if(moveToPlay.equals(last10moves.substring(k,k+6))){
+                    numreps++;
+                }
+            }
+            if(numreps>=3){
+                return 0;
+            }
+        }
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
             numcalcs++;
@@ -155,23 +168,8 @@ public class ChessAI {
 
         //only do the below if this position doesnt result in 3fold repitition (This is a very rough solution) TODO Fix this
 
-
         for (int i = 0; i < posMoves.length(); i+=6) {
             long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
-
-            if(MainClass.moves.length()/6>10){
-               String last10moves = MainClass.moves.substring(MainClass.moves.length()-(10*6));
-               int numreps = 0;
-               for(int k=0;k<last10moves.length();k+=6){
-                   if(posMoves.substring(i,i+6).equals(last10moves.substring(k,k+6))){
-                       numreps++;
-                   }
-               }
-               if(numreps>=3){
-                   r = 0;
-               }
-            }
-
             if(whiteTurn){
                 if(r>pval){
                     pval = r;
@@ -258,15 +256,14 @@ public class ChessAI {
     }
 
     public long evalPosition(short[] pboard){
-        short[] testBoard = pboard.clone();
         long value = 0;
-        if( (MainClass.genAllLegalMoves(testBoard,true).length()==0 || MainClass.genAllLegalMoves(testBoard,false).length()==0) && !MainClass.KingInCheck(pboard)){//check for a Stalemate
+        if( (MainClass.genAllLegalMoves(pboard,true).length()==0 || MainClass.genAllLegalMoves(pboard,false).length()==0) && !MainClass.KingInCheck(pboard)){//check for a Stalemate
             return 0;
         }
-        for (int i = 0; i < testBoard.length; i++) {
+        for (int i = 0; i < pboard.length; i++) {
             int x = i%8;
             int y = i/8;
-            switch(testBoard[i]){
+            switch(pboard[i]){
                 case PawnW:
                     value+=100;
                     value+=PawnPosVals[(7-y)*8+x];
