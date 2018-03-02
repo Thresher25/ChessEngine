@@ -1,4 +1,4 @@
 # ChessEngine
 An experiment which could honestly go either way
 
-Current ELO estimate: ~900 (3 move depth, minimax) !!Crashes and cant get to checkmate/draw
+Current ELO estimate: ~925 (3-6 move depth, minimax) !Can get to checkmate/draw, but crashes right after
