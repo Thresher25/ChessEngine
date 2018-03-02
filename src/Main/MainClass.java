@@ -17,23 +17,23 @@ import java.io.InputStream;
 public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
-    public static short[] board = {00,00,00,00,00,00,00,00,
-                              00,11,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,21,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,00,00,
-                              00,00,00,00,00,00,26,00,
-                              00,00,00,00,00,00,00,00,};
+   // public static short[] board = {00,00,00,00,00,00,00,00,
+   //                           00,11,00,00,00,00,00,00,
+   //                           00,00,00,00,00,00,00,00,
+   //                           00,00,00,00,21,00,00,00,
+   //                           00,00,00,00,00,00,00,00,
+   //                           00,00,00,00,00,00,00,00,
+   //                           00,00,00,00,00,00,26,00,
+   //                           00,00,00,00,00,00,00,00,};
 
-    //public static short[] board = {23,25,24,22,21,24,25,23,
-    //                               26,26,26,26,26,26,26,26,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               16,16,16,16,16,16,16,16,
-    //                               13,15,14,12,11,14,15,13};
+    public static short[] board = {23,25,24,22,21,24,25,23,
+                                   26,26,26,26,26,26,26,26,
+                                   00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   16,16,16,16,16,16,16,16,
+                                   13,15,14,12,11,14,15,13};
 
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -368,7 +368,8 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         }
                         if(!KingBMoved && !RookB07Moved && board[(7)*8+1]==0 && board[(7)*8+2]==0 && board[(7)*8+3]==0 && (board[7*8+4]==KingB && board[7*8]==RookB) ){
                             possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
-                        }else if(!KingBMoved && !RookB77Moved && board[(7)*8+5]==0 && board[(7)*8+6]==0 && (board[7*8+4]==KingB && board[7*8+7]==RookB) ){
+                        }
+                        if(!KingBMoved && !RookB77Moved && board[(7)*8+5]==0 && board[(7)*8+6]==0 && (board[7*8+4]==KingB && board[7*8+7]==RookB) ){
                             possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
                         }
                         break;
