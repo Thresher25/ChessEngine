@@ -103,31 +103,33 @@ public class ChessAI {
                 pval = 1000000;
             }
 
-        for (int i = 0; i < posMoves.length(); i+=6) {
-            long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
-            if(score>beta){//Assuming maxing white
-                break;
-            }
-            if(score>alpha){
-                alpha = score;
-                candidateMove = posMoves.substring(i,i+6);
-            }
-        }
-
-            /*for (int i = 0; i < posMoves.length(); i+=6) {
-                long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
-                if(maxingWhite){
-                    if(r>pval){
-                        pval = r;
-                        candidateMove = posMoves.substring(i,i+6);
+            if(maxingWhite){
+                for (int i = 0; i < posMoves.length(); i+=6) {
+                    long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
+                    if(score>beta){//Assuming maxing white
+                        break;
                     }
-                }else{
-                    if(r<pval){
-                        pval = r;
+                    if(score>alpha){
+                        alpha = score;
                         candidateMove = posMoves.substring(i,i+6);
                     }
                 }
-            }*/
+            }else{
+                for (int i = 0; i < posMoves.length(); i+=6) {
+                    long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
+                    if(maxingWhite){
+                        if(r>pval){
+                            pval = r;
+                            candidateMove = posMoves.substring(i,i+6);
+                        }
+                    }else{
+                        if(r<pval){
+                            pval = r;
+                            candidateMove = posMoves.substring(i,i+6);
+                        }
+                    }
+                }
+            }
         if(numPieces<8){
             inEndGame = true;
             System.out.println("--------ENDGAME--------");
@@ -156,8 +158,9 @@ public class ChessAI {
         short[] testBoard = pboard.clone();
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
-            if(MainClass.moves.length()/6>10){
-                String last10moves = MainClass.moves.substring(MainClass.moves.length()-(10*6));
+            String mainCMoves = MainClass.moves;
+            if(mainCMoves.length()/6>10){
+                String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
                 int numreps = 0;
                 for(int k=0;k<last10moves.length();k+=6){
                     if(moveToPlay.equals(last10moves.substring(k,k+6))){
@@ -188,8 +191,9 @@ public class ChessAI {
         short[] testBoard = pboard.clone();
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
-            if(MainClass.moves.length()/6>10){
-                String last10moves = MainClass.moves.substring(MainClass.moves.length()-(10*6));
+            String mainCMoves = MainClass.moves;
+            if(mainCMoves.length()/6>10){
+                String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
                 int numreps = 0;
                 for(int k=0;k<last10moves.length();k+=6){
                     if(moveToPlay.equals(last10moves.substring(k,k+6))){
@@ -220,8 +224,9 @@ public class ChessAI {
         short[] testBoard = pboard.clone();
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
-            if(MainClass.moves.length()/6>10){
-                String last10moves = MainClass.moves.substring(MainClass.moves.length()-(10*6));
+            String mainCMoves = MainClass.moves;
+            if(mainCMoves.length()/6>10){
+                String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
                 int numreps = 0;
                 for(int k=0;k<last10moves.length();k+=6){
                     if(moveToPlay.equals(last10moves.substring(k,k+6))){
