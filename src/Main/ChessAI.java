@@ -76,6 +76,7 @@ public class ChessAI {
     }
 
     public String pickMove(String posLegalMoves, short[] pboard, boolean whiteTurn, boolean maxingWhite){
+        long time = System.currentTimeMillis();
             int depth;
             numPieces = 0;
         for(int i=0;i<pboard.length;i++){
@@ -86,7 +87,7 @@ public class ChessAI {
             short[] testBoard = pboard.clone();
             String posMoves = posLegalMoves;
             int branchingFactor = posLegalMoves.length()/6;
-            if(branchingFactor<10){
+            if(branchingFactor<10 && numPieces<5){
                 depth = 5;
             }else if(branchingFactor<15 || numPieces<5){
                 depth = 4;
@@ -103,7 +104,7 @@ public class ChessAI {
                 pval = 1000000;
             }
 
-            if(maxingWhite){
+            //if(maxingWhite){
                 for (int i = 0; i < posMoves.length(); i+=6) {
                     long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
                     if(score>beta){//Assuming maxing white
@@ -114,28 +115,28 @@ public class ChessAI {
                         candidateMove = posMoves.substring(i,i+6);
                     }
                 }
-            }else{
-                for (int i = 0; i < posMoves.length(); i+=6) {
-                    long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
-                    if(maxingWhite){
-                        if(r>pval){
-                            pval = r;
-                            candidateMove = posMoves.substring(i,i+6);
-                        }
-                    }else{
-                        if(r<pval){
-                            pval = r;
-                            candidateMove = posMoves.substring(i,i+6);
-                        }
-                    }
-                }
-            }
+            //}else{
+            //    for (int i = 0; i < posMoves.length(); i+=6) {
+            //        long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
+            //        if(maxingWhite){
+            //            if(r>pval){
+            //                pval = r;
+            //                candidateMove = posMoves.substring(i,i+6);
+            //            }
+            //        }else{
+            //            if(r<pval){
+            //                pval = r;
+            //                candidateMove = posMoves.substring(i,i+6);
+            //            }
+            //        }
+            //    }
+            //}
         if(numPieces<8){
             inEndGame = true;
             System.out.println("--------ENDGAME--------");
         }
         //System.out.println(candidateMove);
-        System.out.println("Number of positions evaluated: "+numcalcs);
+        System.out.println("Number of positions evaluated: "+numcalcs+"  and took "+(System.currentTimeMillis()-time)+"milliseconds");
         numcalcs = 0;
         if(candidateMove.equals("")){
             System.out.println();
@@ -172,7 +173,11 @@ public class ChessAI {
                 }
             }
             numcalcs++;
-            return evalPosition(testBoard, whiteTurn);
+            if(maxWhite){
+                return evalPosition(testBoard, whiteTurn);
+            }else{
+                return -evalPosition(testBoard, whiteTurn);
+            }
         }
         String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn);
         for (int i = 0; i < posMoves.length(); i+=6) {
@@ -205,7 +210,11 @@ public class ChessAI {
                 }
             }
             numcalcs++;
-            return evalPosition(testBoard, whiteTurn);
+            if(maxWhite){
+                return evalPosition(testBoard, whiteTurn);
+            }else{
+                return -evalPosition(testBoard, whiteTurn);
+            }
         }
         String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn);
         for (int i = 0; i < posMoves.length(); i+=6) {
