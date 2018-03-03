@@ -88,11 +88,11 @@ public class ChessAI {
             String posMoves = posLegalMoves;
             int branchingFactor = posLegalMoves.length()/6;
             if(branchingFactor<10 && numPieces<5){
+                depth = 6;
+            }else if(branchingFactor<15 || numPieces<6){
                 depth = 5;
-            }else if(branchingFactor<15 || numPieces<5){
-                depth = 4;
             }else{
-                depth=3;
+                depth=4;
             }
             String candidateMove = "";
             long pval;
@@ -104,7 +104,6 @@ public class ChessAI {
                 pval = 1000000;
             }
 
-            //if(maxingWhite){
                 for (int i = 0; i < posMoves.length(); i+=6) {
                     long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
                     if(score>beta){//Assuming maxing white
@@ -115,28 +114,12 @@ public class ChessAI {
                         candidateMove = posMoves.substring(i,i+6);
                     }
                 }
-            //}else{
-            //    for (int i = 0; i < posMoves.length(); i+=6) {
-            //        long r = getBestMove(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6));//value of a node
-            //        if(maxingWhite){
-            //            if(r>pval){
-            //                pval = r;
-            //                candidateMove = posMoves.substring(i,i+6);
-            //            }
-            //        }else{
-            //            if(r<pval){
-            //                pval = r;
-            //                candidateMove = posMoves.substring(i,i+6);
-            //            }
-            //        }
-            //    }
-            //}
         if(numPieces<8){
             inEndGame = true;
             System.out.println("--------ENDGAME--------");
         }
         //System.out.println(candidateMove);
-        System.out.println("Number of positions evaluated: "+numcalcs+"  and took "+(System.currentTimeMillis()-time)+"milliseconds");
+        System.out.println("Number of positions evaluated: "+numcalcs+"  and took "+(System.currentTimeMillis()-time)+" milliseconds");
         numcalcs = 0;
         if(candidateMove.equals("")){
             System.out.println();
@@ -179,7 +162,7 @@ public class ChessAI {
                 return -evalPosition(testBoard, whiteTurn);
             }
         }
-        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn);
+        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn, false);
         for (int i = 0; i < posMoves.length(); i+=6) {
             long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxWhite);
                 if(score>beta){//Assuming maxing white
@@ -216,7 +199,7 @@ public class ChessAI {
                 return -evalPosition(testBoard, whiteTurn);
             }
         }
-        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn);
+        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn, false);
         for (int i = 0; i < posMoves.length(); i+=6) {
             long score = alphaBetaMax(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxWhite);
             if(score<alpha){//Assuming maxing white
@@ -250,7 +233,7 @@ public class ChessAI {
             return evalPosition(testBoard, whiteTurn);
         }
 
-        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn);
+        String posMoves = MainClass.genAllLegalMoves(testBoard, whiteTurn, false);
         long pval;
         if(whiteTurn){
             pval = -1000000;
@@ -277,8 +260,8 @@ public class ChessAI {
 
     public long evalPosition(short[] pboard, boolean whitesMove){
         long value = 0;
-        if(numPieces<5){
-            if(MainClass.genAllLegalMoves(pboard,whitesMove).length()==0 && !MainClass.KingInCheck(pboard)){//check for a Stalemate
+        if(numPieces<9){
+            if(MainClass.genAllLegalMoves(pboard,whitesMove, false).length()==0 && !MainClass.KingInCheck(pboard,whitesMove)){//check for a Stalemate
                 return 0;
             }
         }
@@ -310,7 +293,7 @@ public class ChessAI {
                     value+=QueenPosVals[(7-y)*8+x];
                     break;
                 case KingW:
-                    value+=10000;
+                    value+=100000;
                     if(inEndGame){
                         value+=KingEndGamePosVals[(7-y)*8+x];
                     }else{
@@ -341,7 +324,7 @@ public class ChessAI {
                     value-=QueenPosVals[i];
                     break;
                 case KingB:
-                    value-=10000;
+                    value-=100000;
                     if(inEndGame){
                         value-=KingEndGamePosVals[i];
                     }else{

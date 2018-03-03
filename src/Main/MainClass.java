@@ -134,6 +134,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public static String genMoves(short[] board, boolean whiteToMove){
         String possMoves = "";
+        String capMoves = "";
          for(int i=0;i<board.length;i++) {
              short px = (short)(i%8);
              short py = (short)(i/8);
@@ -150,7 +151,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -173,7 +174,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -194,7 +195,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
                                         if(temp*k!=0 && temp*j!=0){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                         }
                                     }
                                 }catch(Exception e){
@@ -216,7 +217,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
                                         if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                         }
                                     }
                                 }catch(Exception e){
@@ -277,10 +278,10 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         break;
                     case PawnW:
                         String lastMove = moves.substring(moves.length()-6, moves.length());
-                        if(board[Short.parseShort(lastMove.substring(3,4))*8+Short.parseShort(lastMove.substring(2,3))]==PawnB){
+                        if(board[Short.parseShort(lastMove.substring(3,4))*8+Short.parseShort(lastMove.substring(2,3))]==PawnB){//check for an en passent
                             if(Short.parseShort(lastMove.substring(1,2))-Short.parseShort(lastMove.substring(3,4))==2){
                               if( (px-Short.parseShort(lastMove.substring(2,3))==1 || px-Short.parseShort(lastMove.substring(2,3))==-1) && py-Short.parseShort(lastMove.substring(3,4))==0){
-                                  possMoves+=""+px+""+py+""+(Short.parseShort(lastMove.substring(2,3)))+""+(py+1)+"00";
+                                  capMoves+=""+px+""+py+""+(Short.parseShort(lastMove.substring(2,3)))+""+(py+1)+"00";
                               }
                             }
                         }
@@ -307,7 +308,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"24";
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"25";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                    capMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
                                 }
                             }
                         }else if(px==7){
@@ -318,7 +319,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"24";
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"25";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                    capMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
                                 }
                             }
                         }else{
@@ -329,7 +330,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"24";
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"25";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                    capMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
                                 }
                             }
                             if(board[(py+1)*8+(px+1)]/10==1){
@@ -339,7 +340,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"24";
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"25";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                    capMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
                                 }
                             }
                         }
@@ -360,7 +361,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -384,7 +385,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                         temp++;
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                     }
                                 }catch(Exception e){
                                     //do nothing
@@ -405,7 +406,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
                                         if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                         }
                                     }
                                 }catch(Exception e){
@@ -427,7 +428,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     }
                                     if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
                                         if(temp*k!=0 && temp*j!=0){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
                                         }
                                     }
                                 }catch(Exception e){
@@ -488,7 +489,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         break;
                     case PawnB:
                         String lastMove = moves.substring(moves.length()-6, moves.length());
-                        if(board[Short.parseShort(lastMove.substring(3,4))*8+Short.parseShort(lastMove.substring(2,3))]==PawnW){
+                        if(board[Short.parseShort(lastMove.substring(3,4))*8+Short.parseShort(lastMove.substring(2,3))]==PawnW){//check for an en passent
                             if(Short.parseShort(lastMove.substring(1,2))-Short.parseShort(lastMove.substring(3,4))==-2){
                                 if( (px-Short.parseShort(lastMove.substring(2,3))==1 || px-Short.parseShort(lastMove.substring(2,3))==-1) && py-Short.parseShort(lastMove.substring(3,4))==0){
                                     possMoves+=""+px+""+py+""+(Short.parseShort(lastMove.substring(2,3)))+""+(py-1)+"00";
@@ -518,7 +519,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"14";
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"15";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                    capMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
                                 }
                             }
                         }else if(px==7){
@@ -529,7 +530,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"14";
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"15";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                    capMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
                                 }
                             }
                         }else{
@@ -540,7 +541,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"14";
                                     possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"15";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                    capMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
                                 }
                             }
                             if(board[(py-1)*8+(px+1)]/10==2 && board[(py-1)*8+(px+1)]!=0){
@@ -550,7 +551,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"14";
                                     possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"15";
                                 }else{
-                                    possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                    capMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
                                 }
                             }
                         }
@@ -560,16 +561,17 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 }
             }
          }
+         possMoves = capMoves+""+possMoves;
          return possMoves;
     }
 
-    public static String genAllLegalMoves(short[] pboard, boolean whiteToMove){
+    public static String genAllLegalMoves(short[] pboard, boolean whiteToMove, boolean playerCheck){
         String legalMoves = "";
         String candidateMoves = genMoves(pboard,whiteToMove);
 
         for (int i = 0; i < candidateMoves.length(); i+=6) {
             String pTempMove = candidateMoves.substring(i,i+6);
-            if(isLegalMove(whiteToMove, pTempMove, pboard)){
+            if(isLegalMove(whiteToMove, pTempMove, pboard, playerCheck)){
                 legalMoves+=pTempMove;
             }
         }
@@ -582,54 +584,378 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         }
     }
 
-    public static boolean KingInCheck(short[] pboard){
-        String tempMoves = genAllLegalMoves(pboard,false);
-        int safeKings = tempMoves.length()/6;
-        for(int i=0;i<tempMoves.length();i+=6){
-            short[] testBoard = pboard.clone();
-            playMove(testBoard,tempMoves.substring(i,i+6));
-            for(int j=0;j<testBoard.length;j++){
-                if(testBoard[j]==KingW){
-                    safeKings++;
+    public static boolean KingInCheck(short[] pboard, boolean whitesKing){
+        boolean checked = false;
+        int kingPos = 0;
+        for (int i = 0; i < pboard.length; i++) {
+            if(whitesKing){
+                if(pboard[i]==KingW)
+                    kingPos = i;
+            }else{
+                if(pboard[i]==KingB)
+                    kingPos = i;
+            }
+        }
+        int kingX = (short)(kingPos%8);
+        int kingY = (short)(kingPos/8);
+        for (int i=0;i<pboard.length;i++){
+            if(checked){
+                break;
+            }
+            int x = (i%8);
+            int y = (i/8);
+            int difx = x-kingX;
+            int dify = y-kingY;
+            if(whitesKing){
+                switch(pboard[i]){
+                    case PawnB:
+                        if(y-kingY==1 && (x-kingX==-1 || x-kingX==1) ){
+                            checked = true;
+                        }
+                        break;
+                    case KnightB:
+                        if( ( (dify==2 || dify==-2) && (difx==1 || difx==-1) ) || ( (difx==2 || difx==-2) && (dify==1 || dify==-1) )){
+                            checked = true;
+                        }
+                        break;
+                    case BishopB:
+                        if(difx==dify || difx==-dify){
+                            boolean blocked = false;
+                            if(dify<0){
+                                if(difx<0){//bishop at bottom left
+                                    for(int k=0;k<=-difx;k++){
+                                        if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//bishop at bottom right
+                                    for(int k=0;k<=difx;k++){
+                                        if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }else{
+                                if(difx<0){//bishop at top left
+                                    for(int k=0;k<=dify;k++){
+                                        if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//bishop at top right
+                                    for(int k=0;k<=difx;k++){
+                                        if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        break;
+                    case RookB:
+                        if(difx==0 && dify!=0){
+                            boolean blocked = false;
+                            if(dify<0){//rook below king
+                                for(int k=0;k<=-dify;k++){
+                                    if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//rook above king
+                                for(int k=0;k<=dify;k++){
+                                    if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }else if(difx!=0 && dify==0){
+                            boolean blocked = false;
+                            if(difx<0){//rook to the left of king
+                                for(int k=0;k<=-difx;k++){
+                                    if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//rook to the right of king
+                                for(int k=0;k<=difx;k++){
+                                    if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        break;
+                    case QueenB:
+                        if(difx==dify || difx==-dify){
+                            boolean blocked = false;
+                            if(dify<0){
+                                if(difx<0){//queen at bottom left
+                                    for(int k=0;k<=-difx;k++){
+                                        if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//queen at bottom right
+                                    for(int k=0;k<=difx;k++){
+                                        if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }else{
+                                if(difx<0){//queen at top left
+                                    for(int k=0;k<=dify;k++){
+                                        if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//queen at top right
+                                    for(int k=0;k<=difx;k++){
+                                        if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingW){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        if(difx==0 && dify!=0){
+                            boolean blocked = false;
+                            if(dify<0){//queen below king
+                                for(int k=0;k<=-dify;k++){
+                                    if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//queen above king
+                                for(int k=0;k<=dify;k++){
+                                    if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }else if(difx!=0 && dify==0){
+                            boolean blocked = false;
+                            if(difx<0){//queen to the left of king
+                                for(int k=0;k<=-difx;k++){
+                                    if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//queen to the right of king
+                                for(int k=0;k<=difx;k++){
+                                    if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingW){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        break;
+                }
+            }else{
+                switch(pboard[i]){
+                    case PawnW:
+                        if(y-kingY==-1 && (x-kingX==-1 || x-kingX==1) ){
+                            checked = true;
+                        }
+                        break;
+                    case KnightW:
+                        if( ( (dify==2 || dify==-2) && (difx==1 || difx==-1) ) || ( (difx==2 || difx==-2) && (dify==1 || dify==-1) )){
+                            checked = true;
+                        }
+                        break;
+                    case BishopW:
+                        if(difx==dify || difx==-dify){
+                            boolean blocked = false;
+                            if(dify<0){
+                                if(difx<0){//bishop at bottom left
+                                    for(int k=0;k<-difx;k++){
+                                        if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//bishop at bottom right
+                                    for(int k=0;k<difx;k++){
+                                        if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }else{
+                                if(difx<0){//bishop at top left
+                                    for(int k=0;k<dify;k++){
+                                        if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//bishop at top right
+                                    for(int k=0;k<difx;k++){
+                                        if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        break;
+                    case RookW:
+                        if(difx==0 && dify!=0){
+                            boolean blocked = false;
+                            if(dify<0){//rook below king
+                                for(int k=0;k<=-dify;k++){
+                                    if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//rook above king
+                                for(int k=0;k<=dify;k++){
+                                    if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }else if(difx!=0 && dify==0){
+                            boolean blocked = false;
+                            if(difx<0){//rook to the left of king
+                                for(int k=0;k<=-difx;k++){
+                                    if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//rook to the right of king
+                                for(int k=0;k<=difx;k++){
+                                    if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        break;
+                    case QueenW:
+                        if(difx==dify || difx==-dify){
+                            boolean blocked = false;
+                            if(dify<0){
+                                if(difx<0){//queen at bottom left
+                                    for(int k=0;k<=-difx;k++){
+                                        if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//queen at bottom right
+                                    for(int k=0;k<=difx;k++){
+                                        if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }else{
+                                if(difx<0){//queen at top left
+                                    for(int k=0;k<=dify;k++){
+                                        if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }else{//queen at top right
+                                    for(int k=0;k<=difx;k++){
+                                        if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingB){
+                                            blocked = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        if(difx==0 && dify!=0){
+                            boolean blocked = false;
+                            if(dify<0){//queen below king
+                                for(int k=0;k<=-dify;k++){
+                                    if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//queen above king
+                                for(int k=0;k<=dify;k++){
+                                    if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }else if(difx!=0 && dify==0){
+                            boolean blocked = false;
+                            if(difx<0){//queen to the left of king
+                                for(int k=0;k<=-difx;k++){
+                                    if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }else{//queen to the right of king
+                                for(int k=0;k<=difx;k++){
+                                    if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingB){
+                                        blocked = true;
+                                    }
+                                }
+                            }
+                            if(!blocked){
+                                checked = true;
+                            }
+                        }
+                        break;
                 }
             }
         }
-        if(safeKings!=tempMoves.length()/6){
-            return true;
-        }
-        tempMoves = genAllLegalMoves(pboard,true);
-        safeKings = tempMoves.length()/6;
-        for(int i=0;i<tempMoves.length();i+=6){
-            short[] testBoard = pboard.clone();
-            playMove(testBoard,tempMoves.substring(i,i+6));
-            for(int j=0;j<testBoard.length;j++){
-                if(testBoard[j]==KingB){
-                    safeKings++;
-                }
-            }
-        }
-        if(safeKings==tempMoves.length()/6){
-            return false;
-        }else{
-            return true;
-        }
+        return checked;
     }
 
-    public static boolean isLegalMove(boolean whiteToMove, String toMove, short[] board){
+    public static boolean isLegalMove(boolean whiteToMove, String toMove, short[] board, boolean playerCheck){
         short ix = Short.parseShort(toMove.substring(0,1));
         short iy = Short.parseShort(toMove.substring(1,2));
         short dx = Short.parseShort(toMove.substring(2,3));
         short dy = Short.parseShort(toMove.substring(3,4));
         short capPiece = Short.parseShort(toMove.substring(4,6));
         short testBoard[] = board.clone();
-        String movesNow = genMoves(board,whiteToMove);
-        //System.out.println(toMove);
-        //System.out.println(movesNow);
         boolean valid = false;
-        for(int i=0;i<movesNow.length();i+=6){
-            if(toMove.equals(movesNow.substring(i,i+6))){ //Is this move even possible to make (by moving piece rules only)
-                valid = true;
+        if(playerCheck) {
+            String movesNow = genMoves(board, whiteToMove);
+            //System.out.println(toMove);
+            //System.out.println(movesNow);
+            for (int i = 0; i < movesNow.length(); i += 6) {
+                if (toMove.equals(movesNow.substring(i, i + 6))) { //Is this move even possible to make (by moving piece rules only)
+                    valid = true;
+                }
             }
+        }else{
+            valid = true;
         }
         if( (board[iy*8+ix]==KingW || board[iy*8+ix]==KingB) && valid && (dx-ix==-2 || dx-ix==2) ){//if the move is a castle, and it is permitte
             String tempMoves = genMoves(testBoard,!whiteToMove);// then check if the castle is allowed, aka no castling out of checks
@@ -704,7 +1030,17 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         if(!valid){
             return false;
         }
-        playMove(testBoard,ix,iy,dx,dy,capPiece);//play the move, later we check if it breaks any other rules
+            if(KingInCheck(testBoard,whiteToMove)){
+                playMove(testBoard,ix,iy,dx,dy,capPiece);
+                if(KingInCheck(testBoard,whiteToMove)){
+                    return false;
+                }else{
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        /*playMove(testBoard,ix,iy,dx,dy,capPiece);//play the move, later we check if it breaks any other rules
         boolean KingCaptured = false;
         String possibleMoves = genMoves(testBoard,!whiteToMove);
         //System.out.println(possibleMoves);
@@ -750,7 +1086,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             //System.out.println(maxMoves);
             //System.out.println(KingsSafe);
         }
-        return !KingCaptured;
+        return !KingCaptured;*/
     }
 
     public static void playMove(short[] pBoard, short ix, short iy, short dx, short dy, short capPiece){
@@ -957,7 +1293,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public void update(){
         if(isWhiteTurn==AIPlaysWhite){
-            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn),board,isWhiteTurn,AIPlaysWhite);
+            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn, false),board,isWhiteTurn,AIPlaysWhite);
             playMove(board,AIMove);
             moves+=AIMove;
             for (int i = 0; i < board.length; i++) {
@@ -972,7 +1308,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         if(buttonClicked){
             if(pawnPromoteTo!=0){
                 String attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 +""+pawnPromoteTo);
-                if (isLegalMove(isWhiteTurn, attemptMove, board)) {
+                if (isLegalMove(isWhiteTurn, attemptMove, board, true)) {
                     playMove(board, attemptMove);
                     isWhiteTurn = !isWhiteTurn;
                     System.out.println("Legal Move");
@@ -1043,7 +1379,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 }
 
                 if(!buttonClicked){
-                    if (isLegalMove(isWhiteTurn, attemptMove, board)) {
+                    if (isLegalMove(isWhiteTurn, attemptMove, board, true)) {
                         playMove(board, attemptMove);
                         isWhiteTurn = !isWhiteTurn;
                         System.out.println("Legal Move");
