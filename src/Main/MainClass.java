@@ -955,15 +955,6 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         frame.revalidate();
     }
 
-    public void AIPromotePawn(){
-        if(isWhiteTurn){
-            pawnPromoteTo = QueenW;
-        }else{
-            pawnPromoteTo = QueenB;
-        }
-
-    }
-
     public void update(){
         if(isWhiteTurn==AIPlaysWhite){
             String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn),board,isWhiteTurn,AIPlaysWhite);
