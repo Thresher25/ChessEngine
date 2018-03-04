@@ -17,24 +17,24 @@ import java.io.InputStream;
 public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
-    //public static short[] board = {00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,26,
-    //                               00,00,11,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,22,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               16,00,00,00,00,00,00,16,
-    //                               00,00,00,000,00,21,00,00,};
+    public static short[] board = {00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,26,
+                                   00,00,11,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   00,22,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   16,00,00,00,00,00,00,16,
+                                   00,00,00,000,00,21,00,00,};
 
 
-    public static short[] board = {23,25,24,22,21,24,25,23,
-                                   26,26,26,26,26,26,26,26,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   16,16,16,16,16,16,16,16,
-                                   13,15,14,12,11,14,15,13};
+    //public static short[] board = {23,25,24,22,21,24,25,23,
+    //                               26,26,26,26,26,26,26,26,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               16,16,16,16,16,16,16,16,
+    //                               13,15,14,12,11,14,15,13};
     public static short[] origBoard = board;
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -1351,7 +1351,12 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                     return true;
                 }
             }else{
-                return true;
+                playMove(testBoard,ix,iy,dx,dy,capPiece);
+                if(KingInCheck(testBoard,whiteToMove)){
+                    return false;
+                }else{
+                    return true;
+                }
             }
     }
 
@@ -1530,7 +1535,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             short iy = Short.parseShort(lastMove.substring(1,2));
             short dx = Short.parseShort(lastMove.substring(2,3));
             short dy = Short.parseShort(lastMove.substring(3,4));
-            g.setColor(new Color(255,255,102,85));
+            g.setColor(new Color(255,255,102,100));
             g.fillRect(ix*100,(7-iy)*100,100,100);
             g.fillRect(dx*100,(7-dy)*100,100,100);
             if(movingPiece){
@@ -1647,6 +1652,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 if(!buttonClicked){
                     if (isLegalMove(isWhiteTurn, attemptMove, board, true)) {
                         playMove(board, attemptMove);
+                        System.out.println(KingInCheck(board,isWhiteTurn));
                         isWhiteTurn = !isWhiteTurn;
                         System.out.println("Legal Move");
                         moves += attemptMove;

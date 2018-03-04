@@ -87,9 +87,9 @@ public class ChessAI {
             short[] testBoard = pboard.clone();
             String posMoves = posLegalMoves;
             int branchingFactor = posLegalMoves.length()/6;
-            if(branchingFactor<10 && numPieces<5){
+            if(branchingFactor<10 && numPieces<6){
                 depth = 6;
-            }else if(branchingFactor<15 || numPieces<6){
+            }else if(branchingFactor<15 || numPieces<8){
                 depth = 5;
             }else{
                 depth=4;
@@ -120,6 +120,7 @@ public class ChessAI {
         }
         //System.out.println(candidateMove);
         System.out.println("Number of positions evaluated: "+numcalcs+"  and took "+(System.currentTimeMillis()-time)+" milliseconds");
+        System.out.println(depth);
         numcalcs = 0;
         if(candidateMove.equals("")){
             System.out.println();
@@ -263,7 +264,7 @@ public class ChessAI {
         //String allWMoves = MainClass.genMoves(pboard,true);
         //String allBMoves = MainClass.genMoves(pboard,false);
         //value += 0.1*(allWMoves.length()/6-allBMoves.length()/6);
-        if(numPieces<9){
+        if(numPieces<8){
             if(MainClass.genAllLegalMoves(pboard,whitesMove, false).length()==0 && !MainClass.KingInCheck(pboard,whitesMove)){//check for a Stalemate
                 return 0;
             }
