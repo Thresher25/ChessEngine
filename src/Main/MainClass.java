@@ -132,7 +132,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         frame.repaint();
     }
 
-    public static String genMoves(short[] board, boolean whiteToMove){
+    public static String genMoves(short[] board, boolean whiteToMove){//TODO can possible make engine faster by using ints as moves
         String possMoves = "";
         String capMoves = "";
         boolean blockedDL = false, blockedD = false, blockedDR = false, blockedL = false, blockedR = false, blockedUL = false, blockedU = false, blockedUR = false;
@@ -201,14 +201,6 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 capMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
                             }
                         }
-
-                        /*while(board[(py+temp*j)*8+(px+temp*k)]==0 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                            temp++;
-                        }
-                        if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                        }*/
                         if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0 && (board[4]==KingW && board[0]==RookW) ){//castle
                             possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
                         }else if(!KingWMoved && !RookW70Moved && board[5]==0 && board[6]==0 && (board[4]==KingW && board[7]==RookW) ){
