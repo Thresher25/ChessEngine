@@ -139,7 +139,7 @@ public class ChessAI {
     }
 
     public long alphaBetaMax(short[] pboard, boolean whiteTurn, int depth, String moveToPlay, long alpha, long beta, boolean maxWhite){
-        short[] testBoard = pboard.clone();
+        short[] testBoard = pboard.clone();//TODO Engine can be speed up about 2x by not cloning the board, instead play an undo move
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
             String mainCMoves = MainClass.moves;
@@ -258,8 +258,11 @@ public class ChessAI {
         return pval;
     }
 
-    public long evalPosition(short[] pboard, boolean whitesMove){
-        long value = 0;
+    public long evalPosition(short[] pboard, boolean whitesMove){//TODO rate counter-play and trade down pieces when engine is ahead, make it consider mobility and penalize blocked pieces
+        long value = 0;//TODO consider king safety/escape squares, and tempos/attacks
+        //String allWMoves = MainClass.genMoves(pboard,true);
+        //String allBMoves = MainClass.genMoves(pboard,false);
+        //value += 0.1*(allWMoves.length()/6-allBMoves.length()/6);
         if(numPieces<9){
             if(MainClass.genAllLegalMoves(pboard,whitesMove, false).length()==0 && !MainClass.KingInCheck(pboard,whitesMove)){//check for a Stalemate
                 return 0;
@@ -273,7 +276,7 @@ public class ChessAI {
                     value+=100;
                     value+=PawnPosVals[(7-y)*8+x];
                     if(pboard[(y-1)*8+x]==PawnW){//penalty for doubled pawns
-                        value-=50;
+                        value-=40;
                     }
                     break;
                 case KnightW:
@@ -304,7 +307,7 @@ public class ChessAI {
                     value-=100;
                     value-=PawnPosVals[i];
                     if(pboard[(y+1)*8+x]==PawnB){//penalty for doubled pawns
-                        value+=50;
+                        value+=40;
                     }
                     break;
                 case KnightB:
