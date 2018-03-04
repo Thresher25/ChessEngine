@@ -17,24 +17,24 @@ import java.io.InputStream;
 public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
-    //public static short[] board = {00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,13,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,21,00,00,00,00,
-    //                               00,00,00,00,00,00,11,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,};
+    public static short[] board = {00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,26,
+                                   00,00,11,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   00,22,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   16,00,00,00,00,00,00,16,
+                                   00,00,00,000,00,21,00,00,};
 
 
-    public static short[] board = {23,25,24,22,21,24,25,23,
-                                   26,26,26,26,26,26,26,26,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   16,16,16,16,16,16,16,16,
-                                   13,15,14,12,11,14,15,13};
+    //public static short[] board = {23,25,24,22,21,24,25,23,
+    //                               26,26,26,26,26,26,26,26,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               16,16,16,16,16,16,16,16,
+    //                               13,15,14,12,11,14,15,13};
     public static short[] origBoard = board;
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -610,12 +610,12 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 switch(pboard[i]){
                     case PawnB:
                         if(y-kingY==1 && (x-kingX==-1 || x-kingX==1) ){
-                            checked = true;
+                            return true;
                         }
                         break;
                     case KnightB:
                         if( ( (dify==2 || dify==-2) && (difx==1 || difx==-1) ) || ( (difx==2 || difx==-2) && (dify==1 || dify==-1) )){
-                            checked = true;
+                            return true;
                         }
                         break;
                     case BishopB:
@@ -623,13 +623,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             boolean blocked = false;
                             if(dify<0){
                                 if(difx<0){//bishop at bottom left
-                                    for(int k=0;k<=-difx;k++){
+                                    for(int k=1;k<=-difx;k++){
                                         if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingW){
                                             blocked = true;
                                         }
                                     }
                                 }else{//bishop at bottom right
-                                    for(int k=0;k<=difx;k++){
+                                    for(int k=1;k<=difx;k++){
                                         if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingW){
                                             blocked = true;
                                         }
@@ -637,13 +637,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }else{
                                 if(difx<0){//bishop at top left
-                                    for(int k=0;k<=dify;k++){
+                                    for(int k=1;k<=dify;k++){
                                         if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingW){
                                             blocked = true;
                                         }
                                     }
                                 }else{//bishop at top right
-                                    for(int k=0;k<=difx;k++){
+                                    for(int k=1;k<=difx;k++){
                                         if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingW){
                                             blocked = true;
                                         }
@@ -651,7 +651,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }
                         break;
@@ -659,38 +659,38 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         if(difx==0 && dify!=0){
                             boolean blocked = false;
                             if(dify<0){//rook below king
-                                for(int k=0;k<=-dify;k++){
+                                for(int k=1;k<=-dify;k++){
                                     if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }else{//rook above king
-                                for(int k=0;k<=dify;k++){
+                                for(int k=1;k<=dify;k++){
                                     if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }else if(difx!=0 && dify==0){
                             boolean blocked = false;
                             if(difx<0){//rook to the left of king
-                                for(int k=0;k<=-difx;k++){
+                                for(int k=1;k<=-difx;k++){
                                     if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }else{//rook to the right of king
-                                for(int k=0;k<=difx;k++){
+                                for(int k=1;k<=difx;k++){
                                     if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }
                         break;
@@ -699,13 +699,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             boolean blocked = false;
                             if(dify<0){
                                 if(difx<0){//queen at bottom left
-                                    for(int k=0;k<=-difx;k++){
+                                    for(int k=1;k<=-difx;k++){
                                         if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingW){
                                             blocked = true;
                                         }
                                     }
                                 }else{//queen at bottom right
-                                    for(int k=0;k<=difx;k++){
+                                    for(int k=1;k<=difx;k++){
                                         if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingW){
                                             blocked = true;
                                         }
@@ -713,13 +713,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }else{
                                 if(difx<0){//queen at top left
-                                    for(int k=0;k<=dify;k++){
+                                    for(int k=1;k<=dify;k++){
                                         if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingW){
                                             blocked = true;
                                         }
                                     }
                                 }else{//queen at top right
-                                    for(int k=0;k<=difx;k++){
+                                    for(int k=1;k<=difx;k++){
                                         if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingW){
                                             blocked = true;
                                         }
@@ -727,45 +727,50 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }
                         if(difx==0 && dify!=0){
                             boolean blocked = false;
                             if(dify<0){//queen below king
-                                for(int k=0;k<=-dify;k++){
+                                for(int k=1;k<=-dify;k++){
                                     if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }else{//queen above king
-                                for(int k=0;k<=dify;k++){
+                                for(int k=1;k<=dify;k++){
                                     if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }else if(difx!=0 && dify==0){
                             boolean blocked = false;
                             if(difx<0){//queen to the left of king
-                                for(int k=0;k<=-difx;k++){
+                                for(int k=1;k<=-difx;k++){
                                     if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }else{//queen to the right of king
-                                for(int k=0;k<=difx;k++){
+                                for(int k=1;k<=difx;k++){
                                     if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingW){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
+                        }
+                        break;
+                    case KingB:
+                        if( (difx==0 || difx==1 || difx==-1) && (dify==0 || dify==1 || dify==-1) ){
+                            return true;
                         }
                         break;
                 }
@@ -773,12 +778,12 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 switch(pboard[i]){
                     case PawnW:
                         if(y-kingY==-1 && (x-kingX==-1 || x-kingX==1) ){
-                            checked = true;
+                            return true;
                         }
                         break;
                     case KnightW:
                         if( ( (dify==2 || dify==-2) && (difx==1 || difx==-1) ) || ( (difx==2 || difx==-2) && (dify==1 || dify==-1) )){
-                            checked = true;
+                            return true;
                         }
                         break;
                     case BishopW:
@@ -786,13 +791,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             boolean blocked = false;
                             if(dify<0){
                                 if(difx<0){//bishop at bottom left
-                                    for(int k=0;k<-difx;k++){
+                                    for(int k=1;k<-difx;k++){
                                         if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingB){
                                             blocked = true;
                                         }
                                     }
                                 }else{//bishop at bottom right
-                                    for(int k=0;k<difx;k++){
+                                    for(int k=1;k<difx;k++){
                                         if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingB){
                                             blocked = true;
                                         }
@@ -800,13 +805,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }else{
                                 if(difx<0){//bishop at top left
-                                    for(int k=0;k<dify;k++){
+                                    for(int k=1;k<dify;k++){
                                         if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingB){
                                             blocked = true;
                                         }
                                     }
                                 }else{//bishop at top right
-                                    for(int k=0;k<difx;k++){
+                                    for(int k=1;k<difx;k++){
                                         if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingB){
                                             blocked = true;
                                         }
@@ -814,7 +819,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }
                         break;
@@ -822,38 +827,38 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         if(difx==0 && dify!=0){
                             boolean blocked = false;
                             if(dify<0){//rook below king
-                                for(int k=0;k<=-dify;k++){
+                                for(int k=1;k<=-dify;k++){
                                     if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }else{//rook above king
-                                for(int k=0;k<=dify;k++){
+                                for(int k=1;k<=dify;k++){
                                     if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }else if(difx!=0 && dify==0){
                             boolean blocked = false;
                             if(difx<0){//rook to the left of king
-                                for(int k=0;k<=-difx;k++){
+                                for(int k=1;k<=-difx;k++){
                                     if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }else{//rook to the right of king
-                                for(int k=0;k<=difx;k++){
+                                for(int k=1;k<=difx;k++){
                                     if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }
                         break;
@@ -862,13 +867,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             boolean blocked = false;
                             if(dify<0){
                                 if(difx<0){//queen at bottom left
-                                    for(int k=0;k<=-difx;k++){
+                                    for(int k=1;k<=-difx;k++){
                                         if(pboard[(y+k)*8+(x+k)]!=0 && pboard[(y+k)*8+(x+k)]!=KingB){
                                             blocked = true;
                                         }
                                     }
                                 }else{//queen at bottom right
-                                    for(int k=0;k<=difx;k++){
+                                    for(int k=1;k<=difx;k++){
                                         if(pboard[(y+k)*8+(x-k)]!=0 && pboard[(y+k)*8+(x-k)]!=KingB){
                                             blocked = true;
                                         }
@@ -876,13 +881,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }else{
                                 if(difx<0){//queen at top left
-                                    for(int k=0;k<=dify;k++){
+                                    for(int k=1;k<=dify;k++){
                                         if(pboard[(y-k)*8+(x+k)]!=0 && pboard[(y-k)*8+(x+k)]!=KingB){
                                             blocked = true;
                                         }
                                     }
                                 }else{//queen at top right
-                                    for(int k=0;k<=difx;k++){
+                                    for(int k=1;k<=difx;k++){
                                         if(pboard[(y-k)*8+(x-k)]!=0 && pboard[(y-k)*8+(x-k)]!=KingB){
                                             blocked = true;
                                         }
@@ -890,45 +895,50 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }
                         if(difx==0 && dify!=0){
                             boolean blocked = false;
                             if(dify<0){//queen below king
-                                for(int k=0;k<=-dify;k++){
+                                for(int k=1;k<=-dify;k++){
                                     if(pboard[(y+k)*8+x]!=0 && pboard[(y+k)*8+x]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }else{//queen above king
-                                for(int k=0;k<=dify;k++){
+                                for(int k=1;k<=dify;k++){
                                     if(pboard[(y-k)*8+x]!=0 && pboard[(y-k)*8+x]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
                         }else if(difx!=0 && dify==0){
                             boolean blocked = false;
                             if(difx<0){//queen to the left of king
-                                for(int k=0;k<=-difx;k++){
+                                for(int k=1;k<=-difx;k++){
                                     if(pboard[(y)*8+(x+k)]!=0 && pboard[(y)*8+(x+k)]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }else{//queen to the right of king
-                                for(int k=0;k<=difx;k++){
+                                for(int k=1;k<=difx;k++){
                                     if(pboard[(y)*8+(x-k)]!=0 && pboard[(y)*8+(x-k)]!=KingB){
                                         blocked = true;
                                     }
                                 }
                             }
                             if(!blocked){
-                                checked = true;
+                                return true;
                             }
+                        }
+                        break;
+                    case KingW:
+                        if( (difx==0 || difx==1 || difx==-1) && (dify==0 || dify==1 || dify==-1) ){
+                            return true;
                         }
                         break;
                 }
@@ -1390,6 +1400,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         grabbedPiece = 0;
                         movingPiece = false;
                         System.out.println("Move made, is it whites turn next:  " + isWhiteTurn);
+                    System.out.println(KingInCheck(board,false));
                 }
             }
         }
