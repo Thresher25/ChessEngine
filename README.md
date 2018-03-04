@@ -6,7 +6,7 @@ Current ELO estimate: ~900 (4-6 move depth, minimax+alphabeta) !Can get to check
 If you wish to run this engine and play against it you must have the following:
 - Java 9
 
--A decent processor (the engine will take much longer on slower hardware as the depth is hardcoded)
+- A decent processor (the engine will take much longer on slower hardware as the depth is hardcoded)
 
 Once the above requirements are met, you can download the zip of this repo and exctract it somewhere. Navigate to the ChessEngine\out\artifacts\ChessEngine_jar directory. You will see a ChessEngine.jar - this is what you want
 You can move the jar wherever as the assets are already inside the jar. Just double click to run and the engine should start.
