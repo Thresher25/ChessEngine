@@ -1,7 +1,7 @@
 # ChessEngine
 An experiment which could honestly go either way
 
-Current ELO estimate: ~900 (4-6 move depth, minimax+alphabeta) !Can get to checkmate/draw, but crashes right after
+Current ELO estimate: ~950 (4-6 move depth, minimax+alphabeta) !Can get to checkmate/draw, but crashes right after
 
 If you wish to run this engine and play against it you must have the following:
 - Java 9
