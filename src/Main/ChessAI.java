@@ -89,7 +89,7 @@ public class ChessAI {
             int branchingFactor = posLegalMoves.length()/6;
             if(branchingFactor<10 && numPieces<6){
                 depth = 6;
-            }else if(branchingFactor<15 || numPieces<8){
+            }else if(branchingFactor<20 && numPieces<8){
                 depth = 5;
             }else{
                 depth=4;
