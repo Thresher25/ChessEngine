@@ -135,93 +135,254 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
     public static String genMoves(short[] board, boolean whiteToMove){
         String possMoves = "";
         String capMoves = "";
+        boolean blockedDL = false, blockedD = false, blockedDR = false, blockedL = false, blockedR = false, blockedUL = false, blockedU = false, blockedUR = false;
          for(int i=0;i<board.length;i++) {
              short px = (short)(i%8);
              short py = (short)(i/8);
+             blockedDL = false; blockedD = false; blockedDR = false; blockedL = false; blockedR = false; blockedUL = false; blockedU = false; blockedUR = false;
             if(whiteToMove){
                 int temp = 1;
                 switch (board[i]){
                     case KingW:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
-                                }
+                        //int j=1;
+                        if(px-1>=0 && px-1<8 && py-1>=0 && py-1<8){//Down, Left
+                            if(board[(py-1)*8+(px-1)]==0){
+                               possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"00";
+                            }else if(board[(py-1)*8+(px-1)]/10==1){
+                                capMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
                             }
                         }
-                        if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0 && (board[4]==KingW && board[0]==RookW) ){
+                        if(py-1>=0 && py-1<8){//Down
+                            if(board[(py-1)*8+(px)]==0){
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"00";
+                            }else if(board[(py-1)*8+(px)]/10==1){
+                                capMoves+=""+px+""+py+""+(px)+""+(py-1)+""+board[(py-1)*8+(px)];
+                            }
+                        }
+                        if(px+1>=0 && px+1<8 && py-1>=0 && py-1<8){//Down, Right
+                            if(board[(py-1)*8+(px+1)]==0){
+                                possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"00";
+                            }else if(board[(py-1)*8+(px+1)]/10==1){
+                                capMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                            }
+                        }
+                        if(px-1>=0 && px-1<8){//Left
+                            if(board[(py)*8+(px-1)]==0){
+                                possMoves+=""+px+""+py+""+(px-1)+""+(py)+"00";
+                            }else if(board[(py)*8+(px-1)]/10==1){
+                                capMoves+=""+px+""+py+""+(px-1)+""+(py)+""+board[(py)*8+(px-1)];
+                            }
+                        }
+                        if(px+1>=0 && px+1<8){//Right
+                            if(board[(py)*8+(px+1)]==0){
+                                possMoves+=""+px+""+py+""+(px+1)+""+(py)+"00";
+                            }else if(board[(py)*8+(px+1)]/10==1){
+                                capMoves+=""+px+""+py+""+(px+1)+""+(py)+""+board[(py)*8+(px+1)];
+                            }
+                        }
+                        if(px-1>=0 && px-1<8 && py+1>=0 && py+1<8){//Up, Left
+                            if(board[(py+1)*8+(px-1)]==0){
+                                possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"00";
+                            }else if(board[(py+1)*8+(px-1)]/10==1){
+                                capMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                            }
+                        }
+                        if(py+1>=0 && py+1<8){//Up
+                            if(board[(py+1)*8+(px)]==0){
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"00";
+                            }else if(board[(py+1)*8+(px)]/10==1){
+                                capMoves+=""+px+""+py+""+(px)+""+(py+1)+""+board[(py+1)*8+(px)];
+                            }
+                        }
+                        if(px+1>=0 && px+1<8 && py+1>=0 && py+1<8){//Up, Right
+                            if(board[(py+1)*8+(px+1)]==0){
+                                possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"00";
+                            }else if(board[(py+1)*8+(px+1)]/10==1){
+                                capMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                            }
+                        }
+
+                        /*while(board[(py+temp*j)*8+(px+temp*k)]==0 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
+                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
+                            temp++;
+                        }
+                        if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
+                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
+                        }*/
+                        if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0 && (board[4]==KingW && board[0]==RookW) ){//castle
                             possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
                         }else if(!KingWMoved && !RookW70Moved && board[5]==0 && board[6]==0 && (board[4]==KingW && board[7]==RookW) ){
                             possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
                         }
                         break;
                     case QueenW:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
+                        for(int j=1;j<8;j++){
+                            if(px-j>=0 && px-j<8 && py-j>=0 && py-j<8 && !blockedDL){//Down, Left
+                                if(board[(py-j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px-j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py-j)+""+board[(py-j)*8+(px-j)];
+                                    blockedDL = true;
+                                }else{
+                                    blockedDL = true;
+                                }
+                            }
+                            if(py-j>=0 && py-j<8 && !blockedD){//Down
+                                if(board[(py-j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py-j)+""+board[(py-j)*8+(px)];
+                                    blockedD = true;
+                                }else{
+                                    blockedD = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py-j>=0 && py-j<8 && !blockedDR){//Down, Right
+                                if(board[(py-j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px+j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py-j)+""+board[(py-j)*8+(px+j)];
+                                    blockedDR = true;
+                                }else{
+                                    blockedDR = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && !blockedL){//Left
+                                if(board[(py)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px-j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py)+""+board[(py)*8+(px-j)];
+                                    blockedL = true;
+                                }else{
+                                    blockedL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && !blockedR){//Right
+                                if(board[(py)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px+j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py)+""+board[(py)*8+(px+j)];
+                                    blockedR = true;
+                                }else{
+                                    blockedR = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && py+j>=0 && py+j<8 && !blockedUL){//Up, Left
+                                if(board[(py+j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px-j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py+j)+""+board[(py+j)*8+(px-j)];
+                                    blockedUL = true;
+                                }else{
+                                    blockedUL = true;
+                                }
+                            }
+                            if(py+j>=0 && py+j<8 && !blockedU){//Up
+                                if(board[(py+j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py+j)+""+board[(py+j)*8+(px)];
+                                    blockedU = true;
+                                }else{
+                                    blockedU = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py+j>=0 && py+j<8 && !blockedUR){//Up, Right
+                                if(board[(py+j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px+j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py+j)+""+board[(py+j)*8+(px+j)];
+                                    blockedUR = true;
+                                }else{
+                                    blockedUR = true;
                                 }
                             }
                         }
                         break;
                     case BishopW :
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && j!=0 && k!=0 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if(temp*k!=0 && temp*j!=0){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        }
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if(temp*k!=0 && temp*j!=0){
-                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                        }
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
+                        for(int j=1;j<8;j++){
+                            if(px-j>=0 && px-j<8 && py-j>=0 && py-j<8 && !blockedDL){//Down, Left
+                                if(board[(py-j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px-j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py-j)+""+board[(py-j)*8+(px-j)];
+                                    blockedDL = true;
+                                }else{
+                                    blockedDL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py-j>=0 && py-j<8 && !blockedDR){//Down, Right
+                                if(board[(py-j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px+j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py-j)+""+board[(py-j)*8+(px+j)];
+                                    blockedDR = true;
+                                }else{
+                                    blockedDR = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && py+j>=0 && py+j<8 && !blockedUL){//Up, Left
+                                if(board[(py+j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px-j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py+j)+""+board[(py+j)*8+(px-j)];
+                                    blockedUL = true;
+                                }else{
+                                    blockedUL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py+j>=0 && py+j<8 && !blockedUR){//Up, Right
+                                if(board[(py+j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px+j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py+j)+""+board[(py+j)*8+(px+j)];
+                                    blockedUR = true;
+                                }else{
+                                    blockedUR = true;
                                 }
                             }
                         }
                         break;
                     case RookW:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && ( (j!=0 && k==0) || (j==0 && k!=0) )  && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        }
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==1 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
-                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                        }
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
+                        for(int j=1;j<8;j++){
+                            if(py-j>=0 && py-j<8 && !blockedD){//Down
+                                if(board[(py-j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py-j)+""+board[(py-j)*8+(px)];
+                                    blockedD = true;
+                                }else{
+                                    blockedD = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && !blockedL){//Left
+                                if(board[(py)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px-j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py)+""+board[(py)*8+(px-j)];
+                                    blockedL = true;
+                                }else{
+                                    blockedL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && !blockedR){//Right
+                                if(board[(py)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px+j)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py)+""+board[(py)*8+(px+j)];
+                                    blockedR = true;
+                                }else{
+                                    blockedR = true;
+                                }
+                            }
+                            if(py+j>=0 && py+j<8 && !blockedU){//Up
+                                if(board[(py+j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px)]/10==1){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py+j)+""+board[(py+j)*8+(px)];
+                                    blockedU = true;
+                                }else{
+                                    blockedU = true;
                                 }
                             }
                         }
@@ -352,20 +513,60 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 int temp = 1;
                 switch (board[i]){
                     case KingB:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && temp<2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
-                                }
+                        if(px-1>=0 && px-1<8 && py-1>=0 && py-1<8){//Down, Left
+                            if(board[(py-1)*8+(px-1)]==0){
+                                possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"00";
+                            }else if(board[(py-1)*8+(px-1)]/10==2){
+                                capMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                            }
+                        }
+                        if(py-1>=0 && py-1<8){//Down
+                            if(board[(py-1)*8+(px)]==0){
+                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"00";
+                            }else if(board[(py-1)*8+(px)]/10==2){
+                                capMoves+=""+px+""+py+""+(px)+""+(py-1)+""+board[(py-1)*8+(px)];
+                            }
+                        }
+                        if(px+1>=0 && px+1<8 && py-1>=0 && py-1<8){//Down, Right
+                            if(board[(py-1)*8+(px+1)]==0){
+                                possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"00";
+                            }else if(board[(py-1)*8+(px+1)]/10==2){
+                                capMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                            }
+                        }
+                        if(px-1>=0 && px-1<8){//Left
+                            if(board[(py)*8+(px-1)]==0){
+                                possMoves+=""+px+""+py+""+(px-1)+""+(py)+"00";
+                            }else if(board[(py)*8+(px-1)]/10==2){
+                                capMoves+=""+px+""+py+""+(px-1)+""+(py)+""+board[(py)*8+(px-1)];
+                            }
+                        }
+                        if(px+1>=0 && px+1<8){//Right
+                            if(board[(py)*8+(px+1)]==0){
+                                possMoves+=""+px+""+py+""+(px+1)+""+(py)+"00";
+                            }else if(board[(py)*8+(px+1)]/10==2){
+                                capMoves+=""+px+""+py+""+(px+1)+""+(py)+""+board[(py)*8+(px+1)];
+                            }
+                        }
+                        if(px-1>=0 && px-1<8 && py+1>=0 && py+1<8){//Up, Left
+                            if(board[(py+1)*8+(px-1)]==0){
+                                possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"00";
+                            }else if(board[(py+1)*8+(px-1)]/10==2){
+                                capMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                            }
+                        }
+                        if(py+1>=0 && py+1<8){//Up
+                            if(board[(py+1)*8+(px)]==0){
+                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"00";
+                            }else if(board[(py+1)*8+(px)]/10==2){
+                                capMoves+=""+px+""+py+""+(px)+""+(py+1)+""+board[(py+1)*8+(px)];
+                            }
+                        }
+                        if(px+1>=0 && px+1<8 && py+1>=0 && py+1<8){//Up, Right
+                            if(board[(py+1)*8+(px+1)]==0){
+                                possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"00";
+                            }else if(board[(py+1)*8+(px+1)]/10==2){
+                                capMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
                             }
                         }
                         if(!KingBMoved && !RookB07Moved && board[(7)*8+1]==0 && board[(7)*8+2]==0 && board[(7)*8+3]==0 && (board[7*8+4]==KingB && board[7*8]==RookB) ){
@@ -376,63 +577,173 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         }
                         break;
                     case QueenB:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
+                        for(int j=1;j<8;j++){
+                            if(px-j>=0 && px-j<8 && py-j>=0 && py-j<8 && !blockedDL){//Down, Left
+                                if(board[(py-j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px-j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py-j)+""+board[(py-j)*8+(px-j)];
+                                    blockedDL = true;
+                                }else{
+                                    blockedDL = true;
+                                }
+                            }
+                            if(py-j>=0 && py-j<8 && !blockedD){//Down
+                                if(board[(py-j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py-j)+""+board[(py-j)*8+(px)];
+                                    blockedD = true;
+                                }else{
+                                    blockedD = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py-j>=0 && py-j<8 && !blockedDR){//Down, Right
+                                if(board[(py-j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px+j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py-j)+""+board[(py-j)*8+(px+j)];
+                                    blockedDR = true;
+                                }else{
+                                    blockedDR = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && !blockedL){//Left
+                                if(board[(py)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px-j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py)+""+board[(py)*8+(px-j)];
+                                    blockedL = true;
+                                }else{
+                                    blockedL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && !blockedR){//Right
+                                if(board[(py)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px+j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py)+""+board[(py)*8+(px+j)];
+                                    blockedR = true;
+                                }else{
+                                    blockedR = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && py+j>=0 && py+j<8 && !blockedUL){//Up, Left
+                                if(board[(py+j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px-j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py+j)+""+board[(py+j)*8+(px-j)];
+                                    blockedUL = true;
+                                }else{
+                                    blockedUL = true;
+                                }
+                            }
+                            if(py+j>=0 && py+j<8 && !blockedU){//Up
+                                if(board[(py+j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py+j)+""+board[(py+j)*8+(px)];
+                                    blockedU = true;
+                                }else{
+                                    blockedU = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py+j>=0 && py+j<8 && !blockedUR){//Up, Right
+                                if(board[(py+j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px+j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py+j)+""+board[(py+j)*8+(px+j)];
+                                    blockedUR = true;
+                                }else{
+                                    blockedUR = true;
                                 }
                             }
                         }
                         break;
                     case RookB:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && ( (j!=0 && k==0) || (j==0 && k!=0) )  && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        }
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if( (temp*k==0 && temp*j!=0) || (temp*k!=0 && temp*j==0) ){
-                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                        }
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
+                        for(int j=1;j<8;j++){
+                            if(py-j>=0 && py-j<8 && !blockedD){//Down
+                                if(board[(py-j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py-j)+""+board[(py-j)*8+(px)];
+                                    blockedD = true;
+                                }else{
+                                    blockedD = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && !blockedL){//Left
+                                if(board[(py)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px-j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py)+""+board[(py)*8+(px-j)];
+                                    blockedL = true;
+                                }else{
+                                    blockedL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && !blockedR){//Right
+                                if(board[(py)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py)+"00";
+                                }else if(board[(py)*8+(px+j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py)+""+board[(py)*8+(px+j)];
+                                    blockedR = true;
+                                }else{
+                                    blockedR = true;
+                                }
+                            }
+                            if(py+j>=0 && py+j<8 && !blockedU){//Up
+                                if(board[(py+j)*8+(px)]==0){
+                                    possMoves+=""+px+""+py+""+(px)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px)+""+(py+j)+""+board[(py+j)*8+(px)];
+                                    blockedU = true;
+                                }else{
+                                    blockedU = true;
                                 }
                             }
                         }
                         break;
                     case BishopB:
-                        for(int j=-1;j<=1;j++){
-                            for(int k=-1;k<=1;k++){
-                                temp = 1;
-                                try{
-                                    while(board[(py+temp*j)*8+(px+temp*k)]==0 && j!=0 && k!=0 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if(temp*k!=0 && temp*j!=0){
-                                            possMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+"00";
-                                        }
-                                        temp++;
-                                    }
-                                    if(board[(py+temp*j)*8+(px+temp*k)]/10==2 && ((py+temp*j)>=0 && (py+temp*j)<8 && (px+temp*k)>=0 && (px+temp*k)<8) ){
-                                        if(temp*k!=0 && temp*j!=0){
-                                            capMoves+=""+px+""+py+""+(px+temp*k)+""+(py+temp*j)+""+board[(py+temp*j)*8+(px+temp*k)];
-                                        }
-                                    }
-                                }catch(Exception e){
-                                    //do nothing
+                        for(int j=1;j<8;j++){
+                            if(px-j>=0 && px-j<8 && py-j>=0 && py-j<8 && !blockedDL){//Down, Left
+                                if(board[(py-j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px-j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py-j)+""+board[(py-j)*8+(px-j)];
+                                    blockedDL = true;
+                                }else{
+                                    blockedDL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py-j>=0 && py-j<8 && !blockedDR){//Down, Right
+                                if(board[(py-j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py-j)+"00";
+                                }else if(board[(py-j)*8+(px+j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py-j)+""+board[(py-j)*8+(px+j)];
+                                    blockedDR = true;
+                                }else{
+                                    blockedDR = true;
+                                }
+                            }
+                            if(px-j>=0 && px-j<8 && py+j>=0 && py+j<8 && !blockedUL){//Up, Left
+                                if(board[(py+j)*8+(px-j)]==0){
+                                    possMoves+=""+px+""+py+""+(px-j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px-j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px-j)+""+(py+j)+""+board[(py+j)*8+(px-j)];
+                                    blockedUL = true;
+                                }else{
+                                    blockedUL = true;
+                                }
+                            }
+                            if(px+j>=0 && px+j<8 && py+j>=0 && py+j<8 && !blockedUR){//Up, Right
+                                if(board[(py+j)*8+(px+j)]==0){
+                                    possMoves+=""+px+""+py+""+(px+j)+""+(py+j)+"00";
+                                }else if(board[(py+j)*8+(px+j)]/10==2){
+                                    capMoves+=""+px+""+py+""+(px+j)+""+(py+j)+""+board[(py+j)*8+(px+j)];
+                                    blockedUR = true;
+                                }else{
+                                    blockedUR = true;
                                 }
                             }
                         }
@@ -1050,53 +1361,6 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }else{
                 return true;
             }
-        /*playMove(testBoard,ix,iy,dx,dy,capPiece);//play the move, later we check if it breaks any other rules
-        boolean KingCaptured = false;
-        String possibleMoves = genMoves(testBoard,!whiteToMove);
-        //System.out.println(possibleMoves);
-        int maxMoves = possibleMoves.length()/6;
-        int KingsSafe = 0;
-        if(whiteToMove){
-            for(int i=0;i<possibleMoves.length();i+=6){
-                short pix = Short.parseShort(possibleMoves.substring(i,i+6).substring(0,1));
-                short piy = Short.parseShort(possibleMoves.substring(i,i+6).substring(1,2));
-                short pdx = Short.parseShort(possibleMoves.substring(i,i+6).substring(2,3));
-                short pdy = Short.parseShort(possibleMoves.substring(i,i+6).substring(3,4));
-                short pcapPiece = Short.parseShort(possibleMoves.substring(i,i+6).substring(4,6));
-                short[] temp = testBoard.clone();
-                playMove(temp,pix,piy,pdx,pdy,pcapPiece);
-                for(int k=0;k<temp.length;k++){
-                    if(temp[k]==KingW){
-                        KingsSafe++;
-                    }
-                }
-            }
-        }else{
-            for(int i=0;i<possibleMoves.length();i+=6){
-                short pix = Short.parseShort(possibleMoves.substring(i,i+6).substring(0,1));
-                short piy = Short.parseShort(possibleMoves.substring(i,i+6).substring(1,2));
-                short pdx = Short.parseShort(possibleMoves.substring(i,i+6).substring(2,3));
-                short pdy = Short.parseShort(possibleMoves.substring(i,i+6).substring(3,4));
-                short pcapPiece = Short.parseShort(possibleMoves.substring(i,i+6).substring(4,6));
-                short[] temp = testBoard.clone();
-                playMove(temp,pix,piy,pdx,pdy,pcapPiece);
-                for(int k=0;k<temp.length;k++){
-                    if(temp[k]==KingB){
-                        KingsSafe++;
-                    }
-                }
-            }
-        }
-        if(KingsSafe==maxMoves){
-            KingCaptured = false;
-            //System.out.println(maxMoves);
-            //System.out.println(KingsSafe);
-        }else{
-            KingCaptured = true;
-            //System.out.println(maxMoves);
-            //System.out.println(KingsSafe);
-        }
-        return !KingCaptured;*/
     }
 
     public static void playMove(short[] pBoard, short ix, short iy, short dx, short dy, short capPiece){
@@ -1400,7 +1664,6 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         grabbedPiece = 0;
                         movingPiece = false;
                         System.out.println("Move made, is it whites turn next:  " + isWhiteTurn);
-                    System.out.println(KingInCheck(board,false));
                 }
             }
         }
