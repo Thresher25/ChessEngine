@@ -13,6 +13,15 @@ public class ChessAI {
                                             5, 10, 10,-20,-20, 10, 10,  5,
                                             0,  0,  0,  0,  0,  0,  0,  0};
 
+    public final short[] PawnEndGamePosVals = {    0,   0,  0,  0,  0,  0,  0,  0,
+                                                   70, 70, 70, 70, 70, 70, 70, 70,
+                                                   50, 50, 50, 50, 50, 50, 50, 50,
+                                                   30, 30, 30, 30, 30, 30, 30, 30,
+                                                   10, 10, 10, 10, 10, 10, 10, 10,
+                                                    0,  0,  0,  0,  0,  0,  0,  0,
+                                                   -5, -5, -5, -5, -5, -5, -5, -5,
+                                                    0,  0,  0,  0,  0,  0,  0,  0};
+
     public final short[] KnightPosVals = {  -50,-40,-30,-30,-30,-30,-40,-50,
                                             -40,-20,  0,  0,  0,  0,-20,-40,
                                             -30,  0, 10, 15, 15, 10,  0,-30,
@@ -68,8 +77,9 @@ public class ChessAI {
                                                 -50,-30,-30,-30,-30,-30,-30,-50};
     public boolean playsAsWhite = true;
     public boolean inEndGame = false;
-    int numPieces = 0;
-    int numcalcs = 0;
+     int numPieces = 0;
+     int numcalcs = 0;
+    int depth = 0;
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public ChessAI(boolean playsWhite) {
         playsAsWhite = playsWhite;
@@ -77,7 +87,6 @@ public class ChessAI {
 
     public String pickMove(String posLegalMoves, short[] pboard, boolean whiteTurn, boolean maxingWhite){
         long time = System.currentTimeMillis();
-            int depth;
             numPieces = 0;
         for(int i=0;i<pboard.length;i++){
             if(pboard[i]!=0){
@@ -87,9 +96,9 @@ public class ChessAI {
             short[] testBoard = pboard.clone();
             String posMoves = posLegalMoves;
             int branchingFactor = posLegalMoves.length()/6;
-            if(branchingFactor<10 && numPieces<6){
+            if(numPieces<6){
                 depth = 6;
-            }else if(branchingFactor<20 && numPieces<8){
+            }else if(numPieces<10){
                 depth = 5;
             }else{
                 depth=4;
@@ -103,8 +112,7 @@ public class ChessAI {
             }else{
                 pval = 1000000;
             }
-
-                for (int i = 0; i < posMoves.length(); i+=6) {
+                for (int i = 0; i < posMoves.length(); i+=6){
                     long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
                     if(score>beta){//Assuming maxing white
                         break;
@@ -120,7 +128,6 @@ public class ChessAI {
         }
         //System.out.println(candidateMove);
         System.out.println("Number of positions evaluated: "+numcalcs+"  and took "+(System.currentTimeMillis()-time)+" milliseconds");
-        System.out.println(depth);
         numcalcs = 0;
         if(candidateMove.equals("")){
             System.out.println();
@@ -259,14 +266,45 @@ public class ChessAI {
         return pval;
     }
 
-    public long evalPosition(short[] pboard, boolean whitesMove){//TODO rate counter-play and trade down pieces when engine is ahead, make it consider mobility and penalize blocked pieces
-        long value = 0;//TODO consider king safety/escape squares, and tempos/attacks
-        //String allWMoves = MainClass.genMoves(pboard,true);
-        //String allBMoves = MainClass.genMoves(pboard,false);
-        //value += 0.1*(allWMoves.length()/6-allBMoves.length()/6);
-        if(numPieces<8){
-            if(MainClass.genAllLegalMoves(pboard,whitesMove, false).length()==0 && !MainClass.KingInCheck(pboard,whitesMove)){//check for a Stalemate
-                return 0;
+    public long evalPosition(short[] pboard, boolean whitesMove){//TODO rate counter-play and trade down pieces when engine is ahead, and penalize blocked pieces
+        long value = 0;//TODO consider king safety/escape squares, and tempos/attacks, interpolate positional bonuses from mid-end game
+        int numWBishop = 0;
+        int numBBishop = 0;
+        if(depth<5){
+            String allWMoves = MainClass.genAllLegalMoves(pboard,true, false);
+            String allBMoves = MainClass.genAllLegalMoves(pboard,false, false);
+            value += 0.09*(allWMoves.length()/6-allBMoves.length()/6);
+            if(whitesMove){
+                if(allWMoves.length()==0){
+                    if(!MainClass.KingInCheck(pboard,whitesMove)){
+                        return 0;
+                    }else{
+                        return -200000;
+                    }
+                }
+            }else{
+                if(allBMoves.length()==0){
+                    if(!MainClass.KingInCheck(pboard,whitesMove)){
+                        return 0;
+                    }else{
+                        return 200000;
+                    }
+                }
+            }
+        }else{
+            if(numPieces<16){
+                boolean inChk = MainClass.KingInCheck(pboard,whitesMove);
+                if(MainClass.genAllLegalMoves(pboard,whitesMove,false).length()==0 ){
+                    if(inChk){
+                        if(whitesMove){
+                            return -300000;
+                        }else{
+                            return 300000;
+                        }
+                    }else{
+                        return 0;
+                    }
+                }
             }
         }
         for (int i = 0; i < pboard.length; i++) {
@@ -275,7 +313,11 @@ public class ChessAI {
             switch(pboard[i]){
                 case PawnW:
                     value+=100;
-                    value+=PawnPosVals[(7-y)*8+x];
+                    if(numPieces<10){
+                       value+=PawnEndGamePosVals[(7-y)*8+x];
+                    }else{
+                       value+=PawnPosVals[(7-y)*8+x];
+                    }
                     if(pboard[(y-1)*8+x]==PawnW){//penalty for doubled pawns
                         value-=40;
                     }
@@ -285,7 +327,8 @@ public class ChessAI {
                     value+=KnightPosVals[(7-y)*8+x];
                     break;
                 case BishopW:
-                    value+=325;
+                    numWBishop++;
+                    value+=275;
                     value+=BishopPosVals[(7-y)*8+x];
                     break;
                 case RookW:
@@ -306,7 +349,11 @@ public class ChessAI {
                     break;
                 case PawnB:
                     value-=100;
-                    value-=PawnPosVals[i];
+                    if(numPieces<10){
+                        value-=PawnEndGamePosVals[i];
+                    }else{
+                      value-=PawnPosVals[i];
+                    }
                     if(pboard[(y+1)*8+x]==PawnB){//penalty for doubled pawns
                         value+=40;
                     }
@@ -316,7 +363,8 @@ public class ChessAI {
                     value-=KnightPosVals[i];
                     break;
                 case BishopB:
-                    value-=325;
+                    numBBishop++;
+                    value-=275;
                     value-=BishopPosVals[i];
                     break;
                 case RookB:
@@ -336,6 +384,12 @@ public class ChessAI {
                     }
                     break;
             }
+        }
+        if(numBBishop>=2){
+            value-=150;
+        }
+        if(numWBishop>=2){
+            value+=150;
         }
         return value;
     }

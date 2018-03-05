@@ -137,8 +137,8 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         String capMoves = "";
         boolean blockedDL = false, blockedD = false, blockedDR = false, blockedL = false, blockedR = false, blockedUL = false, blockedU = false, blockedUR = false;
          for(int i=0;i<board.length;i++) {
-             short px = (short)(i%8);
-             short py = (short)(i/8);
+             int px = (i%8);
+             int py = (i/8);
              blockedDL = false; blockedD = false; blockedDR = false; blockedL = false; blockedR = false; blockedUL = false; blockedU = false; blockedUR = false;
             if(whiteToMove){
                 int temp = 1;
@@ -899,8 +899,8 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                     kingPos = i;
             }
         }
-        int kingX = (short)(kingPos%8);
-        int kingY = (short)(kingPos/8);
+        int kingX = (kingPos%8);
+        int kingY = (kingPos/8);
         for (int i=0;i<pboard.length;i++){
             if(checked){
                 break;
@@ -1652,7 +1652,6 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 if(!buttonClicked){
                     if (isLegalMove(isWhiteTurn, attemptMove, board, true)) {
                         playMove(board, attemptMove);
-                        System.out.println(KingInCheck(board,isWhiteTurn));
                         isWhiteTurn = !isWhiteTurn;
                         System.out.println("Legal Move");
                         moves += attemptMove;
