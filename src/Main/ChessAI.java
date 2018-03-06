@@ -79,14 +79,14 @@ public class ChessAI {
     public boolean inEndGame = false;
      int numPieces = 0;
      int numcalcs = 0;
-    int depth = 0;
+    int mdepth = 0;
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public ChessAI(boolean playsWhite) {
         playsAsWhite = playsWhite;
     }
 
-    public String pickMove(String posLegalMoves, short[] pboard, boolean whiteTurn, boolean maxingWhite){
-        long time = System.currentTimeMillis();
+    public String pickMove(String posLegalMoves, short[] pboard, boolean whiteTurn, boolean maxingWhite){//TODO Checkmate is broken, AI doesnt play it
+        long time = System.currentTimeMillis();//TODO add 3move rep draw, and checkmate detection between parent and child nodes
             numPieces = 0;
         for(int i=0;i<pboard.length;i++){
             if(pboard[i]!=0){
@@ -97,23 +97,23 @@ public class ChessAI {
             String posMoves = posLegalMoves;
             int branchingFactor = posLegalMoves.length()/6;
             if(numPieces<6){
-                depth = 6;
+                mdepth = 6;
             }else if(numPieces<10){
-                depth = 5;
+                mdepth = 5;
             }else{
-                depth=4;
+                mdepth=4;
             }
             String candidateMove = "";
             long pval;
-            long alpha = -1000000;
-            long beta = 1000000;
+            long alpha = -1000000000;
+            long beta = 1000000000;
             if(whiteTurn){
                 pval = -1000000;
             }else{
                 pval = 1000000;
             }
                 for (int i = 0; i < posMoves.length(); i+=6){
-                    long score = alphaBetaMin(testBoard,!whiteTurn,depth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
+                    long score = alphaBetaMin(testBoard,!whiteTurn,mdepth-1,posMoves.substring(i,i+6),alpha,beta, maxingWhite);
                     if(score>beta){//Assuming maxing white
                         break;
                     }
@@ -150,19 +150,6 @@ public class ChessAI {
         short[] testBoard = pboard.clone();//TODO Engine can be speed up about 2x by not cloning the board, instead play an undo move
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
-            String mainCMoves = MainClass.moves;
-            if(mainCMoves.length()/6>10){
-                String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
-                int numreps = 0;
-                for(int k=0;k<last10moves.length();k+=6){
-                    if(moveToPlay.equals(last10moves.substring(k,k+6))){
-                        numreps++;
-                    }
-                }
-                if(numreps>=3){
-                    return 0;
-                }
-            }
             numcalcs++;
             if(maxWhite){
                 return evalPosition(testBoard, whiteTurn);
@@ -180,6 +167,26 @@ public class ChessAI {
                     alpha = score;
                 }
         }
+        if(posMoves.length()==0){
+            if(MainClass.KingInCheck(testBoard,whiteTurn)){
+                return -30000000*depth;
+            }else{
+                return 0;
+            }
+        }
+        String mainCMoves = MainClass.moves;
+        if(mainCMoves.length()/6>10){
+            String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
+            int numreps = 0;
+            for(int k=0;k<last10moves.length();k+=6){
+                if(moveToPlay.equals(last10moves.substring(k,k+6))){
+                    numreps++;
+                }
+            }
+            if(numreps>=3){
+                return 0;
+            }
+        }
         return alpha;
     }
 
@@ -187,19 +194,6 @@ public class ChessAI {
         short[] testBoard = pboard.clone();
         MainClass.playMove(testBoard,moveToPlay);
         if(depth<=0){
-            String mainCMoves = MainClass.moves;
-            if(mainCMoves.length()/6>10){
-                String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
-                int numreps = 0;
-                for(int k=0;k<last10moves.length();k+=6){
-                    if(moveToPlay.equals(last10moves.substring(k,k+6))){
-                        numreps++;
-                    }
-                }
-                if(numreps>=3){
-                    return 0;
-                }
-            }
             numcalcs++;
             if(maxWhite){
                 return evalPosition(testBoard, whiteTurn);
@@ -215,6 +209,26 @@ public class ChessAI {
             }
             if(score<beta){
                 beta = score;
+            }
+        }
+        if(posMoves.length()==0){
+            if(MainClass.KingInCheck(testBoard,whiteTurn)){
+                return 30000000*depth;
+            }else{
+                return 0;
+            }
+        }
+        String mainCMoves = MainClass.moves;
+        if(mainCMoves.length()/6>10){
+            String last10moves = mainCMoves.substring(mainCMoves.length()-(10*6));
+            int numreps = 0;
+            for(int k=0;k<last10moves.length();k+=6){
+                if(moveToPlay.equals(last10moves.substring(k,k+6))){
+                    numreps++;
+                }
+            }
+            if(numreps>=3){
+                return 0;
             }
         }
         return beta;
@@ -270,10 +284,10 @@ public class ChessAI {
         long value = 0;//TODO consider king safety/escape squares, and tempos/attacks, interpolate positional bonuses from mid-end game
         int numWBishop = 0;
         int numBBishop = 0;
-        if(depth<5){
+        if(mdepth<5){
             String allWMoves = MainClass.genAllLegalMoves(pboard,true, false);
             String allBMoves = MainClass.genAllLegalMoves(pboard,false, false);
-            value += 0.09*(allWMoves.length()/6-allBMoves.length()/6);
+            value += 0.1*(allWMoves.length()/6-allBMoves.length()/6);
             if(whitesMove){
                 if(allWMoves.length()==0){
                     if(!MainClass.KingInCheck(pboard,whitesMove)){
@@ -297,9 +311,9 @@ public class ChessAI {
                 if(MainClass.genAllLegalMoves(pboard,whitesMove,false).length()==0 ){
                     if(inChk){
                         if(whitesMove){
-                            return -300000;
+                            return -200000;
                         }else{
-                            return 300000;
+                            return 200000;
                         }
                     }else{
                         return 0;
