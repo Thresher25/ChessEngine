@@ -158,66 +158,66 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         }
                         if(py-1>=0 && py-1<8){//Down
                             if(board[(py-1)*8+(px)]==0){
-                                possMoves[posIterate++]+=""+px+""+py+""+(px)+""+(py-1)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py-1)<<10)+((px)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py-1)*8+(px)]/10==1){
-                                capMoves[capIterate++]+=""+px+""+py+""+(px)+""+(py-1)+""+board[(py-1)*8+(px)];
+                                capMoves[capIterate++]+=(0)+(board[(py-1)*8+(px)]<<5)+((py-1)<<10)+((px)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(px+1>=0 && px+1<8 && py-1>=0 && py-1<8){//Down, Right
                             if(board[(py-1)*8+(px+1)]==0){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py-1)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py-1)<<10)+((px+1)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py-1)*8+(px+1)]/10==1){
-                                capMoves+=""+px+""+py+""+(px+1)+""+(py-1)+""+board[(py-1)*8+(px+1)];
+                                capMoves[capIterate++]+=(0)+(board[(py-1)*8+(px+1)]<<5)+((py-1)<<10)+((px+1)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(px-1>=0 && px-1<8){//Left
                             if(board[(py)*8+(px-1)]==0){
-                                possMoves+=""+px+""+py+""+(px-1)+""+(py)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px-1)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py)*8+(px-1)]/10==1){
-                                capMoves+=""+px+""+py+""+(px-1)+""+(py)+""+board[(py)*8+(px-1)];
+                                capMoves[capIterate++]+=(0)+(board[(py)*8+(px-1)]<<5)+((py)<<10)+((px-1)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(px+1>=0 && px+1<8){//Right
                             if(board[(py)*8+(px+1)]==0){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px+1)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py)*8+(px+1)]/10==1){
-                                capMoves+=""+px+""+py+""+(px+1)+""+(py)+""+board[(py)*8+(px+1)];
+                                capMoves[capIterate++]+=(0)+(board[(py)*8+(px+1)]<<5)+((py)<<10)+((px+1)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(px-1>=0 && px-1<8 && py+1>=0 && py+1<8){//Up, Left
                             if(board[(py+1)*8+(px-1)]==0){
-                                possMoves+=""+px+""+py+""+(px-1)+""+(py+1)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py+1)<<10)+((px-1)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py+1)*8+(px-1)]/10==1){
-                                capMoves+=""+px+""+py+""+(px-1)+""+(py+1)+""+board[(py+1)*8+(px-1)];
+                                capMoves[capIterate++]+=(0)+(board[(py+1)*8+(px-1)]<<5)+((py+1)<<10)+((px-1)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(py+1>=0 && py+1<8){//Up
                             if(board[(py+1)*8+(px)]==0){
-                                possMoves+=""+px+""+py+""+(px)+""+(py+1)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py+1)<<10)+((px)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py+1)*8+(px)]/10==1){
-                                capMoves+=""+px+""+py+""+(px)+""+(py+1)+""+board[(py+1)*8+(px)];
+                                capMoves[capIterate++]+=(0)+(board[(py+1)*8+(px)]<<5)+((py+1)<<10)+((px)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(px+1>=0 && px+1<8 && py+1>=0 && py+1<8){//Up, Right
                             if(board[(py+1)*8+(px+1)]==0){
-                                possMoves+=""+px+""+py+""+(px+1)+""+(py+1)+"00";
+                                possMoves[posIterate++]+= (0)+(0<<5)+((py+1)<<10)+((px+1)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py+1)*8+(px+1)]/10==1){
-                                capMoves+=""+px+""+py+""+(px+1)+""+(py+1)+""+board[(py+1)*8+(px+1)];
+                                capMoves[capIterate++]+=(0)+(board[(py+1)*8+(px+1)]<<5)+((py+1)<<10)+((px+1)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(!KingWMoved && !RookW00Moved && board[1]==0 && board[2]==0 && board[3]==0 && (board[4]==KingW && board[0]==RookW) ){//castle
-                            possMoves+=""+px+""+py+""+(px-2)+""+py+"00";
+                            possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px-2)<<13)+(py<<16)+(px<<19);
                         }else if(!KingWMoved && !RookW70Moved && board[5]==0 && board[6]==0 && (board[4]==KingW && board[7]==RookW) ){
-                            possMoves+=""+px+""+py+""+(px+2)+""+py+"00";
+                            possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px+2)<<13)+(py<<16)+(px<<19);
                         }
                         break;
                     case QueenW:
                         for(int j=1;j<8;j++){
                             if(px-j>=0 && px-j<8 && py-j>=0 && py-j<8 && !blockedDL){//Down, Left
                                 if(board[(py-j)*8+(px-j)]==0){
-                                    possMoves+=""+px+""+py+""+(px-j)+""+(py-j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py-j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py-j)*8+(px-j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px-j)+""+(py-j)+""+board[(py-j)*8+(px-j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py-j)*8+(px-j)]<<5)+((py-j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                     blockedDL = true;
                                 }else{
                                     blockedDL = true;
@@ -225,9 +225,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(py-j>=0 && py-j<8 && !blockedD){//Down
                                 if(board[(py-j)*8+(px)]==0){
-                                    possMoves+=""+px+""+py+""+(px)+""+(py-j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py-j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py-j)*8+(px)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px)+""+(py-j)+""+board[(py-j)*8+(px)];
+                                    capMoves[capIterate++]+=(0)+(board[(py-j)*8+(px)]<<5)+((py-j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                     blockedD = true;
                                 }else{
                                     blockedD = true;
@@ -235,9 +235,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px+j>=0 && px+j<8 && py-j>=0 && py-j<8 && !blockedDR){//Down, Right
                                 if(board[(py-j)*8+(px+j)]==0){
-                                    possMoves+=""+px+""+py+""+(px+j)+""+(py-j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py-j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py-j)*8+(px+j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px+j)+""+(py-j)+""+board[(py-j)*8+(px+j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py-j)*8+(px+j)]<<5)+((py-j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                     blockedDR = true;
                                 }else{
                                     blockedDR = true;
@@ -245,9 +245,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px-j>=0 && px-j<8 && !blockedL){//Left
                                 if(board[(py)*8+(px-j)]==0){
-                                    possMoves+=""+px+""+py+""+(px-j)+""+(py)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py)*8+(px-j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px-j)+""+(py)+""+board[(py)*8+(px-j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py)*8+(px-j)]<<5)+((py)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                     blockedL = true;
                                 }else{
                                     blockedL = true;
@@ -255,9 +255,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px+j>=0 && px+j<8 && !blockedR){//Right
                                 if(board[(py)*8+(px+j)]==0){
-                                    possMoves+=""+px+""+py+""+(px+j)+""+(py)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py)*8+(px+j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px+j)+""+(py)+""+board[(py)*8+(px+j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py)*8+(px+j)]<<5)+((py)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                     blockedR = true;
                                 }else{
                                     blockedR = true;
@@ -265,9 +265,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px-j>=0 && px-j<8 && py+j>=0 && py+j<8 && !blockedUL){//Up, Left
                                 if(board[(py+j)*8+(px-j)]==0){
-                                    possMoves+=""+px+""+py+""+(px-j)+""+(py+j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py+j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py+j)*8+(px-j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px-j)+""+(py+j)+""+board[(py+j)*8+(px-j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py+j)*8+(px-j)]<<5)+((py+j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                     blockedUL = true;
                                 }else{
                                     blockedUL = true;
@@ -275,9 +275,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(py+j>=0 && py+j<8 && !blockedU){//Up
                                 if(board[(py+j)*8+(px)]==0){
-                                    possMoves+=""+px+""+py+""+(px)+""+(py+j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py+j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py+j)*8+(px)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px)+""+(py+j)+""+board[(py+j)*8+(px)];
+                                    capMoves[capIterate++]+=(0)+(board[(py+j)*8+(px)]<<5)+((py+j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                     blockedU = true;
                                 }else{
                                     blockedU = true;
@@ -285,9 +285,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px+j>=0 && px+j<8 && py+j>=0 && py+j<8 && !blockedUR){//Up, Right
                                 if(board[(py+j)*8+(px+j)]==0){
-                                    possMoves+=""+px+""+py+""+(px+j)+""+(py+j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py+j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py+j)*8+(px+j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px+j)+""+(py+j)+""+board[(py+j)*8+(px+j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py+j)*8+(px+j)]<<5)+((py+j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                     blockedUR = true;
                                 }else{
                                     blockedUR = true;
@@ -299,9 +299,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         for(int j=1;j<8;j++){
                             if(px-j>=0 && px-j<8 && py-j>=0 && py-j<8 && !blockedDL){//Down, Left
                                 if(board[(py-j)*8+(px-j)]==0){
-                                    possMoves+=""+px+""+py+""+(px-j)+""+(py-j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py-j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py-j)*8+(px-j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px-j)+""+(py-j)+""+board[(py-j)*8+(px-j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py-j)*8+(px-j)]<<5)+((py-j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                     blockedDL = true;
                                 }else{
                                     blockedDL = true;
@@ -309,9 +309,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px+j>=0 && px+j<8 && py-j>=0 && py-j<8 && !blockedDR){//Down, Right
                                 if(board[(py-j)*8+(px+j)]==0){
-                                    possMoves+=""+px+""+py+""+(px+j)+""+(py-j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py-j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py-j)*8+(px+j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px+j)+""+(py-j)+""+board[(py-j)*8+(px+j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py-j)*8+(px+j)]<<5)+((py-j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                     blockedDR = true;
                                 }else{
                                     blockedDR = true;
@@ -319,9 +319,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px-j>=0 && px-j<8 && py+j>=0 && py+j<8 && !blockedUL){//Up, Left
                                 if(board[(py+j)*8+(px-j)]==0){
-                                    possMoves+=""+px+""+py+""+(px-j)+""+(py+j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py+j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py+j)*8+(px-j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px-j)+""+(py+j)+""+board[(py+j)*8+(px-j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py+j)*8+(px-j)]<<5)+((py+j)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                     blockedUL = true;
                                 }else{
                                     blockedUL = true;
@@ -329,9 +329,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px+j>=0 && px+j<8 && py+j>=0 && py+j<8 && !blockedUR){//Up, Right
                                 if(board[(py+j)*8+(px+j)]==0){
-                                    possMoves+=""+px+""+py+""+(px+j)+""+(py+j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py+j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py+j)*8+(px+j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px+j)+""+(py+j)+""+board[(py+j)*8+(px+j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py+j)*8+(px+j)]<<5)+((py+j)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                     blockedUR = true;
                                 }else{
                                     blockedUR = true;
@@ -343,9 +343,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         for(int j=1;j<8;j++){
                             if(py-j>=0 && py-j<8 && !blockedD){//Down
                                 if(board[(py-j)*8+(px)]==0){
-                                    possMoves+=""+px+""+py+""+(px)+""+(py-j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py-j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py-j)*8+(px)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px)+""+(py-j)+""+board[(py-j)*8+(px)];
+                                    capMoves[capIterate++]+=(0)+(board[(py-j)*8+(px)]<<5)+((py-j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                     blockedD = true;
                                 }else{
                                     blockedD = true;
@@ -353,9 +353,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px-j>=0 && px-j<8 && !blockedL){//Left
                                 if(board[(py)*8+(px-j)]==0){
-                                    possMoves+=""+px+""+py+""+(px-j)+""+(py)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py)*8+(px-j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px-j)+""+(py)+""+board[(py)*8+(px-j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py)*8+(px-j)]<<5)+((py)<<10)+((px-j)<<13)+(py<<16)+(px<<19);
                                     blockedL = true;
                                 }else{
                                     blockedL = true;
@@ -363,9 +363,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(px+j>=0 && px+j<8 && !blockedR){//Right
                                 if(board[(py)*8+(px+j)]==0){
-                                    possMoves+=""+px+""+py+""+(px+j)+""+(py)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py)*8+(px+j)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px+j)+""+(py)+""+board[(py)*8+(px+j)];
+                                    capMoves[capIterate++]+=(0)+(board[(py)*8+(px+j)]<<5)+((py)<<10)+((px+j)<<13)+(py<<16)+(px<<19);
                                     blockedR = true;
                                 }else{
                                     blockedR = true;
@@ -373,9 +373,9 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                             }
                             if(py+j>=0 && py+j<8 && !blockedU){//Up
                                 if(board[(py+j)*8+(px)]==0){
-                                    possMoves+=""+px+""+py+""+(px)+""+(py+j)+"00";
+                                    possMoves[posIterate++]+= (0)+(0<<5)+((py+j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                 }else if(board[(py+j)*8+(px)]/10==1){
-                                    capMoves+=""+px+""+py+""+(px)+""+(py+j)+""+board[(py+j)*8+(px)];
+                                    capMoves[capIterate++]+=(0)+(board[(py+j)*8+(px)]<<5)+((py+j)<<10)+((px)<<13)+(py<<16)+(px<<19);
                                     blockedU = true;
                                 }else{
                                     blockedU = true;
