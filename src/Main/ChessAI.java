@@ -96,9 +96,9 @@ public class ChessAI {
             short[] testBoard = pboard.clone();
             String posMoves = posLegalMoves;
             int branchingFactor = posLegalMoves.length()/6;
-            if(numPieces<6){
+            if(numPieces<9){
                 mdepth = 6;
-            }else if(numPieces<10){
+            }else if(numPieces<12){
                 mdepth = 5;
             }else{
                 mdepth=4;
@@ -122,7 +122,7 @@ public class ChessAI {
                         candidateMove = posMoves.substring(i,i+6);
                     }
                 }
-        if(numPieces<8){
+        if(numPieces<15){
             inEndGame = true;
             System.out.println("--------ENDGAME--------");
         }

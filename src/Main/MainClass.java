@@ -13,28 +13,30 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.PrimitiveIterator;
 
 public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public JFrame frame;
-    public static short[] board = {00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,11,00,00,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,21,00,00,
-                                   00,00,00,00,00,00,00,00,
-                                   00,00,00,00,00,00,00,23,};
+    //public static short[] board = {00,00,00,00,00,00,24,21,
+    //                               12,00,00,00,00,00,00,00,
+    //                               00,00,00,00,00,00,00,00,
+    //                               00,00,16,00,00,00,00,00,
+    //                               00,00,00,11,16,00,00,00,
+    //                               00,00,26,00,00,00,00,00,
+    //                               00,24,00,15,14,00,00,00,
+    //                               00,00,00,00,14,25,00,00};
 
 
-    //public static short[] board = {23,25,24,22,21,24,25,23,
-    //                               26,26,26,26,26,26,26,26,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               00,00,00,00,00,00,00,00,
-    //                               16,16,16,16,16,16,16,16,
-    //                               13,15,14,12,11,14,15,13};
+    public static short[] board = {23,25,24,22,21,24,25,23,
+                                   26,26,26,26,26,26,26,26,
+                                   00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   00,00,00,00,00,00,00,00,
+                                   16,16,16,16,16,16,16,16,
+                                   13,15,14,12,11,14,15,13};
     public static short[] origBoard = board;
     public static final short KingW = 21, QueenW  = 22, RookW = 23, BishopW = 24, KnightW = 25, PawnW = 26, KingB = 11, QueenB  = 12, RookB = 13, BishopB = 14, KnightB = 15, PawnB = 16, Empty = 0;
     public short grabbedPiece;
@@ -132,9 +134,11 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         frame.repaint();
     }
 
-    public static String genMoves(short[] board, boolean whiteToMove){//TODO can possible make engine faster by using ints as moves
-        String possMoves = "";
-        String capMoves = "";
+    public static int[] genMoves(short[] board, boolean whiteToMove){//TODO can possible make engine faster by using ints as moves
+     int[] possMoves = new int[218];
+     int[] capMoves = new int[218];
+     int capIterate = 0;
+     int posIterate = 0;
         boolean blockedDL = false, blockedD = false, blockedDR = false, blockedL = false, blockedR = false, blockedUL = false, blockedU = false, blockedUR = false;
          for(int i=0;i<board.length;i++) {
              int px = (i%8);
@@ -147,16 +151,16 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         //int j=1;
                         if(px-1>=0 && px-1<8 && py-1>=0 && py-1<8){//Down, Left
                             if(board[(py-1)*8+(px-1)]==0){
-                               possMoves+=""+px+""+py+""+(px-1)+""+(py-1)+"00";
+                               possMoves[posIterate++]+= (0)+(0<<5)+((py-1)<<10)+((px-1)<<13)+(py<<16)+(px<<19);
                             }else if(board[(py-1)*8+(px-1)]/10==1){
-                                capMoves+=""+px+""+py+""+(px-1)+""+(py-1)+""+board[(py-1)*8+(px-1)];
+                                capMoves[capIterate++]+=(0)+(board[(py-1)*8+(px-1)]<<5)+((py-1)<<10)+((px-1)<<13)+(py<<16)+(px<<19);
                             }
                         }
                         if(py-1>=0 && py-1<8){//Down
                             if(board[(py-1)*8+(px)]==0){
-                                possMoves+=""+px+""+py+""+(px)+""+(py-1)+"00";
+                                possMoves[posIterate++]+=""+px+""+py+""+(px)+""+(py-1)+"00";
                             }else if(board[(py-1)*8+(px)]/10==1){
-                                capMoves+=""+px+""+py+""+(px)+""+(py-1)+""+board[(py-1)*8+(px)];
+                                capMoves[capIterate++]+=""+px+""+py+""+(px)+""+(py-1)+""+board[(py-1)*8+(px)];
                             }
                         }
                         if(px+1>=0 && px+1<8 && py-1>=0 && py-1<8){//Down, Right
