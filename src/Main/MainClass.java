@@ -822,14 +822,17 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
          return possMoves;
     }
 
-    public static String genAllLegalMoves(short[] pboard, boolean whiteToMove, boolean playerCheck){
-        String legalMoves = "";
-        String candidateMoves = genMoves(pboard,whiteToMove);
+    public static int[] genAllLegalMoves(short[] pboard, boolean whiteToMove, boolean playerCheck){
+        int[] legalMoves = new int[218];
+        int legalMoveCount = 0;
+        int[] candidateMoves = genMoves(pboard,whiteToMove);
 
-        for (int i = 0; i < candidateMoves.length(); i+=6) {
-            String pTempMove = candidateMoves.substring(i,i+6);
-            if(isLegalMove(whiteToMove, pTempMove, pboard, playerCheck)){
-                legalMoves+=pTempMove;
+        for (int i = 0; i < candidateMoves.length; i++) {
+            if(candidateMoves[i]==0){
+                break;
+            }
+            if(isLegalMove(whiteToMove, candidateMoves[i], pboard, playerCheck)){
+                legalMoves[legalMoveCount++] = candidateMoves[i];
             }
         }
         return legalMoves;
@@ -1204,20 +1207,21 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         return checked;
     }
 
-    public static boolean isLegalMove(boolean whiteToMove, String toMove, short[] board, boolean playerCheck){
-        short ix = Short.parseShort(toMove.substring(0,1));
-        short iy = Short.parseShort(toMove.substring(1,2));
-        short dx = Short.parseShort(toMove.substring(2,3));
-        short dy = Short.parseShort(toMove.substring(3,4));
-        short capPiece = Short.parseShort(toMove.substring(4,6));
+    public static boolean isLegalMove(boolean whiteToMove, int toMove, short[] board, boolean playerCheck){
+        int ix = (toMove>>19) & 7;
+        int iy = (toMove>>16) & 7;
+        int dx = (toMove>>13) & 7;
+        int dy = (toMove>>10) & 7;
+        int capPiece = (toMove>>5) & 31;
+        int promPiece = toMove & 31;
         short testBoard[] = board.clone();
         boolean valid = false;
         if(playerCheck) {
-            String movesNow = genMoves(board, whiteToMove);
+            int[] movesNow = genMoves(board, whiteToMove);
             //System.out.println(toMove);
             //System.out.println(movesNow);
-            for (int i = 0; i < movesNow.length(); i += 6) {
-                if (toMove.equals(movesNow.substring(i, i + 6))) { //Is this move even possible to make (by moving piece rules only)
+            for (int i = 0; i < movesNow.length; i++) {
+                if (toMove==movesNow[i]) { //Is this move even possible to make (by moving piece rules only)
                     valid = true;
                 }
             }
@@ -1225,15 +1229,20 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             valid = true;
         }
         if( (board[iy*8+ix]==KingW || board[iy*8+ix]==KingB) && valid && (dx-ix==-2 || dx-ix==2) ){//if the move is a castle, and it is permitte
-            String tempMoves = genMoves(testBoard,!whiteToMove);// then check if the castle is allowed, aka no castling out of checks
+            int[] tempMoves = genMoves(testBoard,!whiteToMove);// then check if the castle is allowed, aka no castling out of checks
             int tempSafeKings = 0;
-            int tempMaxMoves = tempMoves.length()/6;
-            for(int i=0;i<tempMoves.length();i+=6){
-                short pix = Short.parseShort(tempMoves.substring(i,i+6).substring(0,1));
-                short piy = Short.parseShort(tempMoves.substring(i,i+6).substring(1,2));
-                short pdx = Short.parseShort(tempMoves.substring(i,i+6).substring(2,3));
-                short pdy = Short.parseShort(tempMoves.substring(i,i+6).substring(3,4));
-                short pcapPiece = Short.parseShort(tempMoves.substring(i,i+6).substring(4,6));
+            int tempMaxMoves = tempMoves.length;
+            for(int i=0;i<tempMoves.length;i++){
+                int mov = tempMoves[i];
+                if(mov==0){
+                    break;
+                }
+                int pix = (mov>>19) & 7;
+                int piy = (mov>>16) & 7;
+                int pdx = (mov>>13) & 7;
+                int pdy = (mov>>10) & 7;
+                int pcapPiece = (mov>>5) & 31;
+                int ppromPiece =  mov & 31;
                 short[] temp = testBoard.clone();
                 playMove(temp,pix,piy,pdx,pdy,pcapPiece);
                 if(whiteToMove){
@@ -1267,13 +1276,18 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }
            tempMoves = genMoves(testBoard,!whiteToMove);
             tempSafeKings = 0;
-            tempMaxMoves = tempMoves.length()/6;
-            for(int i=0;i<tempMoves.length();i+=6){
-                short pix = Short.parseShort(tempMoves.substring(i,i+6).substring(0,1));
-                short piy = Short.parseShort(tempMoves.substring(i,i+6).substring(1,2));
-                short pdx = Short.parseShort(tempMoves.substring(i,i+6).substring(2,3));
-                short pdy = Short.parseShort(tempMoves.substring(i,i+6).substring(3,4));
-                short pcapPiece = Short.parseShort(tempMoves.substring(i,i+6).substring(4,6));
+            tempMaxMoves = tempMoves.length;
+            for(int i=0;i<tempMoves.length;i++){
+                int mov = tempMoves[i];
+                if(mov==0){
+                    break;
+                }
+                int pix = (mov>>19) & 7;
+                int piy = (mov>>16) & 7;
+                int pdx = (mov>>13) & 7;
+                int pdy = (mov>>10) & 7;
+                int pcapPiece = (mov>>5) & 31;
+                int ppromPiece =  mov & 31;
                 short[] temp = temptestBoard.clone();
                 playMove(temp,pix,piy,pdx,pdy,pcapPiece);
                 if(whiteToMove){
@@ -1314,7 +1328,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
             }
     }
 
-    public static void playMove(short[] pBoard, short ix, short iy, short dx, short dy, short capPiece){
+    public static void playMove(short[] pBoard, int ix, int iy, int dx, int dy, int capPiece){
         if( (pBoard[iy*8+ix]==PawnW || pBoard[iy*8+ix]==PawnB) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]==0) ){//check for en passant
                 pBoard[iy*8+dx] = 0;
         }else if(pBoard[iy*8+ix]==KingW){
@@ -1363,7 +1377,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
         if( ( (pBoard[iy*8+ix]==PawnW && dy==7) || (pBoard[iy*8+ix]==PawnB && dy==0) ) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]!=0) ){
             pBoard[iy*8+ix] = 0;
-            pBoard[dy*8+dx] = capPiece;
+            pBoard[dy*8+dx] = (short)capPiece;
         }else{
             pBoard[dy*8+dx] = pBoard[iy*8+ix];
             pBoard[iy*8+ix] = 0;
@@ -1371,12 +1385,13 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     }
 
-    public static void playMove(short[] pBoard, String playMove){
-        short ix = Short.parseShort(playMove.substring(0,1));
-        short iy = Short.parseShort(playMove.substring(1,2));
-        short dx = Short.parseShort(playMove.substring(2,3));
-        short dy = Short.parseShort(playMove.substring(3,4));
-        short capPiece = Short.parseShort(playMove.substring(4,6));
+    public static void playMove(short[] pBoard, int playMove){
+        int ix = (playMove>>19) & 7;
+        int iy = (playMove>>16) & 7;
+        int dx = (playMove>>13) & 7;
+        int dy = (playMove>>10) & 7;
+        int capPiece = (playMove>>5) & 31;
+        int promPiece =  playMove & 31;
         if( (pBoard[iy*8+ix]==PawnW || pBoard[iy*8+ix]==PawnB) && (dx-ix!=0 && dy-iy!=0) && (pBoard[dy*8+dx]==0) ){//check for en passant
             pBoard[iy*8+dx] = 0;
         }else if(pBoard[iy*8+ix]==KingW){
@@ -1425,7 +1440,7 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
         if( ( (pBoard[iy*8+ix]==PawnW && dy==7) || (pBoard[iy*8+ix]==PawnB && dy==0) )){
             pBoard[iy*8+ix] = 0;
-            pBoard[dy*8+dx] = capPiece;
+            pBoard[dy*8+dx] = (short)capPiece;
         }else{
             pBoard[dy*8+dx] = pBoard[iy*8+ix];
             pBoard[iy*8+ix] = 0;
@@ -1518,9 +1533,19 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
 
     public void update(){
         if(isWhiteTurn==AIPlaysWhite){
-            String AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn, false),board,isWhiteTurn,AIPlaysWhite);
+            int AIMove = chessAI.pickMove(genAllLegalMoves(board,isWhiteTurn, false),board,isWhiteTurn,AIPlaysWhite);
             playMove(board,AIMove);
-            moves+=AIMove;
+            int ix = (AIMove>>19) & 7;
+            int iy = (AIMove>>16) & 7;
+            int dx = (AIMove>>13) & 7;
+            int dy = (AIMove>>10) & 7;
+            int capPiece = (AIMove>>5) & 31;
+            int promPiece =  AIMove & 31;
+            if(capPiece==0){
+                moves +=""+ix+""+iy+""+dx+""+dy+""+capPiece+"0";
+            }else{
+                moves +=""+ix+""+iy+""+dx+""+dy+""+capPiece;
+            }
             for (int i = 0; i < board.length; i++) {
                 if ((board[i] == PawnW && i / 8 == 7) || (board[i] == PawnB && i / 8 == 0)) {
                         pawnPromoteTo = chessAI.promotePawn(board,isWhiteTurn);
@@ -1532,12 +1557,22 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
         }
         if(buttonClicked){
             if(pawnPromoteTo!=0){
-                String attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 +""+pawnPromoteTo);
+                int attemptMove = (0)+(pawnPromoteTo<<5)+((y2)<<10)+(x2<<13)+(y1<<16)+(x1<<19);
                 if (isLegalMove(isWhiteTurn, attemptMove, board, true)) {
                     playMove(board, attemptMove);
                     isWhiteTurn = !isWhiteTurn;
                     System.out.println("Legal Move");
-                    moves += attemptMove;
+                    int ix = (attemptMove>>19) & 7;
+                    int iy = (attemptMove>>16) & 7;
+                    int dx = (attemptMove>>13) & 7;
+                    int dy = (attemptMove>>10) & 7;
+                    int capPiece = (attemptMove>>5) & 31;
+                    int promPiece =  attemptMove & 31;
+                    if(capPiece==0){
+                        moves +=""+ix+""+iy+""+dx+""+dy+""+capPiece+"0";
+                    }else{
+                        moves +=""+ix+""+iy+""+dx+""+dy+""+capPiece;
+                    }
                 } else {
                     System.out.println("Illegal move");
                 }
@@ -1584,22 +1619,22 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                 x2 = (short) (e.getX() / 100);
                 y2 = (short) (7 - (e.getY() / 100));
                 //check if legal
-                String attemptMove = "";
+                int attemptMove;
                 if(grabbedPiece!=PawnB && grabbedPiece!=PawnW){
                     if (board[y2 * 8 + x2] == 0) {
-                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + "00");
+                        attemptMove = (0)+(0<<5)+((y2)<<10)+(x2<<13)+(y1<<16)+(x1<<19);
                     } else {
-                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
+                        attemptMove = (0)+(board[y2 * 8 + x2]<<5)+((y2)<<10)+(x2<<13)+(y1<<16)+(x1<<19);
                     }
                 }else if(y2==0 || y2==7){
                     showButtons();
                     buttonClicked = true;
-                    attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 +"22");
+                    attemptMove = (0)+(22<<5)+((y2)<<10)+(x2<<13)+(y1<<16)+(x1<<19);
                 }else{
                     if (board[y2 * 8 + x2] == 0) {
-                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + "00");
+                        attemptMove = (0)+(0<<5)+((y2)<<10)+(x2<<13)+(y1<<16)+(x1<<19);
                     } else {
-                        attemptMove = ("" + x1 + "" + y1 + "" + x2 + "" + y2 + "" + board[y2 * 8 + x2]);
+                        attemptMove = (0)+(board[y2 * 8 + x2]<<5)+((y2)<<10)+(x2<<13)+(y1<<16)+(x1<<19);
                     }
                 }
 
@@ -1608,7 +1643,17 @@ public class MainClass extends JPanel implements MouseListener, ActionListener{
                         playMove(board, attemptMove);
                         isWhiteTurn = !isWhiteTurn;
                         System.out.println("Legal Move");
-                        moves += attemptMove;
+                        int ix = (attemptMove>>19) & 7;
+                        int iy = (attemptMove>>16) & 7;
+                        int dx = (attemptMove>>13) & 7;
+                        int dy = (attemptMove>>10) & 7;
+                        int capPiece = (attemptMove>>5) & 31;
+                        int promPiece =  attemptMove & 31;
+                        if(capPiece==0){
+                            moves +=""+ix+""+iy+""+dx+""+dy+""+capPiece+"0";
+                        }else{
+                            moves +=""+ix+""+iy+""+dx+""+dy+""+capPiece;
+                        }
                     } else{
                         System.out.println("Illegal move");
                     }
